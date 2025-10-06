@@ -1,0 +1,134 @@
+<div class="falcon-signature-container">
+  <div class="header">
+    <h1>🦅 Falcon Signature Input</h1>
+    <p class="subtitle">Enter simplified Falcon-512 signature components to generate full circuit inputs</p>
+  </div>
+
+  <div class="content">
+    <form (ngSubmit)="generateAndNavigate()" #signatureForm="ngForm">
+      <div class="form-section">
+        <h2>Signature Components</h2>
+        
+        <div class="form-group">
+          <label for="s1">
+            s1 - Signature Polynomial
+            <span class="required">*</span>
+          </label>
+          <textarea
+            id="s1"
+            name="s1"
+            [(ngModel)]="s1"
+            required
+            rows="8"
+            placeholder='[1, 2, 3, ..., 512 coefficients]'
+            [disabled]="loading"
+          ></textarea>
+          <span class="help-text">Array of 512 integers representing the signature polynomial</span>
+        </div>
+
+        <div class="form-group">
+          <label for="h">
+            h - Public Key Component
+            <span class="required">*</span>
+          </label>
+          <textarea
+            id="h"
+            name="h"
+            [(ngModel)]="h"
+            required
+            rows="8"
+            placeholder='[1, 2, 3, ..., 512 coefficients]'
+            [disabled]="loading"
+          ></textarea>
+          <span class="help-text">Array of 512 integers representing the public key polynomial</span>
+        </div>
+
+        <div class="form-group">
+          <label for="h2p">
+            h2p - Hash-to-Point
+            <span class="required">*</span>
+          </label>
+          <textarea
+            id="h2p"
+            name="h2p"
+            [(ngModel)]="h2p"
+            required
+            rows="8"
+            placeholder='[1, 2, 3, ..., 512 coefficients]'
+            [disabled]="loading"
+          ></textarea>
+          <span class="help-text">Array of 512 integers from hash-to-point operation</span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="in_tx_hash1">
+              Transaction Hash 1
+              <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="in_tx_hash1"
+              name="in_tx_hash1"
+              [(ngModel)]="in_tx_hash1"
+              required
+              placeholder="170141183460469231731687303715884105727"
+              [disabled]="loading"
+            />
+            <span class="help-text">128-bit integer as string</span>
+          </div>
+
+          <div class="form-group">
+            <label for="in_tx_hash2">
+              Transaction Hash 2
+              <span class="required">*</span>
+            </label>
+            <input
+              type="text"
+              id="in_tx_hash2"
+              name="in_tx_hash2"
+              [(ngModel)]="in_tx_hash2"
+              required
+              placeholder="170141183460469231731687303715884105727"
+              [disabled]="loading"
+            />
+            <span class="help-text">128-bit integer as string</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        <strong>❌ Error:</strong> {{ error }}
+      </div>
+
+      <div class="button-group">
+        <button 
+          type="submit" 
+          class="btn btn-primary"
+          [disabled]="loading || !isFormValid()"
+        >
+          {{ loading ? '⏳ Processing...' : '🚀 Generate & Proceed to Proof' }}
+        </button>
+      </div>
+    </form>
+
+    <div class="card info-card">
+      <h3>ℹ️ About This Page</h3>
+      <p>
+        This page accepts <strong>simplified Falcon-512 signature components</strong> and automatically generates the full circuit inputs required for zero-knowledge proof generation.
+      </p>
+      <h4>What happens when you submit?</h4>
+      <ul>
+        <li><strong>NTT Transform:</strong> Applies Number Theoretic Transform to <code>h</code> to get <code>h_hat</code></li>
+        <li><strong>Poseidon Hashing:</strong> Computes <code>pk_hash_in</code> and <code>in_c_hash</code> using Poseidon hash</li>
+        <li><strong>SHA256 Unpacking:</strong> Converts transaction hashes to 16 × 16-bit integers</li>
+        <li><strong>Product Calculation:</strong> Computes <code>h_product_inv</code> using NTT/INTT operations</li>
+        <li><strong>Navigation:</strong> Redirects to the Proof Generation page with all inputs pre-filled</li>
+      </ul>
+      <p class="note">
+        <strong>Note:</strong> All arrays must contain exactly 512 coefficients. The service will validate and process your inputs before navigation.
+      </p>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,26 @@
+<nav class="main-nav">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <span class="brand-icon">🦅</span>
+      <span class="brand-text">Falcon ZKP Demo</span>
+    </div>
+    <div class="nav-links">
+      <a routerLink="/falcon-signature" routerLinkActive="active">
+        <span class="nav-icon">📝</span>
+        <span>Falcon Signature</span>
+      </a>
+      <a routerLink="/generate" routerLinkActive="active">
+        <span class="nav-icon">🔐</span>
+        <span>Generate Proof</span>
+      </a>
+      <a routerLink="/verify" routerLinkActive="active">
+        <span class="nav-icon">✓</span>
+        <span>Verify Proof</span>
+      </a>
+    </div>
+  </div>
+</nav>
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
