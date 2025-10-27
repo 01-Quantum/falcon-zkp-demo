@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "deploy": "npm run build:ghpages && npx gh-pages -d dist/zkp-demo/browser"
+    "build:ghpages": "ng build --base-href=/falcon-zkp-demo/",
+    "deploy": "npm run build:ghpages && npx gh-pages -d dist/zkp-demo/browser -r https://github.com/01-Quantum/falcon-zkp-demo.git"
   },
   "prettier": {
     "printWidth": 100,
@@ -41,12 +42,18 @@
     "@angular/cli": "^20.3.4",
     "@angular/compiler-cli": "^20.3.0",
     "@types/jasmine": "~5.1.0",
+    "@types/node": "^24.9.1",
+    "assert": "^2.1.0",
+    "events": "^3.3.0",
+    "gh-pages": "^6.3.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
     "typescript": "~5.9.2"
   }
 }

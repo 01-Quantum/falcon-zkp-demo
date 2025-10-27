@@ -84,11 +84,6 @@ cd zkp-demo
 npm install
 ```
 
-3. Deploy to GH-PAGES
-```bash
-npm run deploy
-```
-
 ## 🎮 Usage
 
 ### Running the Development Server
@@ -112,6 +107,32 @@ npm run build
 ```
 
 The build artifacts will be stored in the `dist/` directory.
+
+### Deploying to GitHub Pages
+
+Deploy your app to GitHub Pages with a single command:
+
+```bash
+npm run deploy
+```
+
+This will:
+1. Build the app with the correct base href (`/falcon-zkp-demo/`)
+2. Deploy the `dist/zkp-demo/browser` folder to the `gh-pages` branch
+3. App will be live at `https:// 01-quantum.github.io/falcon-zkp-demo/`
+
+**Note:** Make sure GitHub Pages is enabled in your repository settings:
+- Go to **Settings → Pages**
+- Source: Deploy from a branch
+- Branch: `gh-pages` → `/ (root)`
+
+#### Manual Build for GitHub Pages
+
+If you want to build without deploying:
+
+```bash
+npm run build:ghpages
+```
 
 ## 📁 Project Structure
 
