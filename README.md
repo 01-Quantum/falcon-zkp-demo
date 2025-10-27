@@ -1,6 +1,11 @@
-# Falcon-512 ZKP Demo
+# 01 Qunatum Falcon-512 ZKP Demo
 
 A modern Angular application for generating and verifying Zero-Knowledge Proofs (ZKPs) for Falcon-512 post-quantum signatures using Groth16 proof system.
+
+[Live Demo](https://01-quantum.github.io/falcon-zkp-demo)
+
+## Generate a new Falcon-512 Signature and Crypto material 
+[👉 01-quantum.github.io/falcon-qone-wasm/](https://01-quantum.github.io/falcon-qone-wasm/)
 
 ## 🚀 Features
 
@@ -9,6 +14,58 @@ A modern Angular application for generating and verifying Zero-Knowledge Proofs 
 - **Example Data**: Pre-loaded example inputs for quick testing
 - **Modern UI**: Beautiful, responsive design with smooth animations
 - **Real-time Validation**: Form validation and error handling
+
+## 🔐 How It Works
+
+### 1. Proof Generation
+
+1. Navigate to the "Generate Proof" page (default)
+2. Load an example or manually enter the following fields:
+   - **s1** (512 integers): Signature component
+   - **h_hat** (512 integers): Hash values
+   - **h_product_inv** (512 integers): Product inverse
+   - **h2p_d** (512 integers): Hash to point data `[h2p - (in_tx_hash1 || in_tx_hash2)]`
+   - **pk_hash_in**: Public key hash
+   - **in_tx_hash1**: Transaction hash 1 half
+   - **in_tx_hash2**: Transaction hash 2 half
+   - **in_c_hash**: hash to point (hpc) Commitment hash
+3. Click "Generate Proof"
+4. The application will:
+   - Parse and validate inputs
+   - Generate witness using the WASM circuit
+   - Compute the ZK proof using Groth16
+   - Navigate to the verification page with the proof
+
+
+## 🔧 Technical Details
+
+### ZKP Components
+
+- **Circuit**: Falcon-512 signature verification circuit
+- **Proof System**: Groth16
+- **Curve**: bn128
+- **Library**: snarkjs 0.7.0
+- **Public Inputs**: 3 signals
+
+### Circuit Files
+
+The circuit files in `public/assets/` include:
+- **falcon_512_test.wasm**: Compiled circuit for witness generation
+- **falcon-512.zkey**: Zero-knowledge proving key
+- **falcon-512_vkey.json**: Verification key
+
+
+## 📝 Example Workflow
+
+1. **Start the app**: `npm start`
+2. **Generate a proof**:
+   - Click "Load Example 1"
+   - Click "Generate Proof"
+   - Wait for proof generation (may take a few seconds)
+3. **Verify the proof**:
+   - Automatically redirected to verification page
+   - Click "Verify Proof"
+   - See the verification result ✅
 
 ## 📋 Prerequisites
 
@@ -25,6 +82,11 @@ cd zkp-demo
 2. Install dependencies:
 ```bash
 npm install
+```
+
+3. Deploy to GH-PAGES
+```bash
+npm run deploy
 ```
 
 ## 🎮 Usage
@@ -77,121 +139,3 @@ zkp-demo/
 │       └── public-2.json           # Example public signals
 └── package.json
 ```
-
-## 🔐 How It Works
-
-### 1. Proof Generation
-
-1. Navigate to the "Generate Proof" page (default)
-2. Load an example or manually enter the following fields:
-   - **s1** (512 integers): Signature component
-   - **h_hat** (512 integers): Hash values
-   - **h_product_inv** (512 integers): Product inverse
-   - **h2p_d** (512 integers): Hash to point data
-   - **pk_hash_in**: Public key hash
-   - **in_tx_hash1**: Transaction hash 1
-   - **in_tx_hash2**: Transaction hash 2
-   - **in_c_hash**: Commitment hash
-3. Click "Generate Proof"
-4. The application will:
-   - Parse and validate inputs
-   - Generate witness using the WASM circuit
-   - Compute the ZK proof using Groth16
-   - Navigate to the verification page with the proof
-
-### 2. Proof Verification
-
-1. After generating a proof, you'll be automatically redirected to the verification page
-2. The proof and public signals will be displayed
-3. Click "Verify Proof" to verify against the verification key
-4. The result will show whether the proof is valid or invalid
-
-You can also:
-- Manually input proof JSON and public signals
-- Load an example proof
-- Copy proof data to clipboard
-
-## 🔧 Technical Details
-
-### ZKP Components
-
-- **Circuit**: Falcon-512 signature verification circuit
-- **Proof System**: Groth16
-- **Curve**: bn128
-- **Library**: snarkjs 0.7.0
-- **Public Inputs**: 3 signals
-
-### Input Format
-
-All array inputs should be in JSON format:
-```json
-[1, 2, 3, ..., 512]
-```
-
-Or comma-separated:
-```
-1, 2, 3, ..., 512
-```
-
-### Circuit Files
-
-The circuit files in `public/assets/` include:
-- **falcon_512_test.wasm**: Compiled circuit for witness generation
-- **falcon-512.zkey**: Zero-knowledge proving key
-- **falcon-512_vkey.json**: Verification key
-
-## 🎨 UI Features
-
-- Gradient backgrounds with modern color schemes
-- Responsive design for mobile and desktop
-- Loading states and error handling
-- Form validation with visual feedback
-- Smooth animations and transitions
-- Copy-to-clipboard functionality
-
-## 📝 Example Workflow
-
-1. **Start the app**: `npm start`
-2. **Generate a proof**:
-   - Click "Load Example 1"
-   - Click "Generate Proof"
-   - Wait for proof generation (may take a few seconds)
-3. **Verify the proof**:
-   - Automatically redirected to verification page
-   - Click "Verify Proof"
-   - See the verification result ✅
-
-## 🐛 Troubleshooting
-
-### "Failed to load circuit files"
-- Ensure all files are in `public/assets/`
-- Check that the development server is running
-- Clear browser cache and reload
-
-### "Array must have exactly 512 elements"
-- Verify input arrays have exactly 512 numbers
-- Check JSON format is valid
-- Try loading an example first
-
-### Slow proof generation
-- Proof generation is computationally intensive
-- First load may be slower due to WASM initialization
-- Use a modern browser (Chrome, Firefox, Edge recommended)
-
-## 🔗 Dependencies
-
-- **Angular**: ^19.x
-- **snarkjs**: ^0.7.0
-- **TypeScript**: ~5.7.x
-
-## 📄 License
-
-This project is part of the Falcon ZKP demo.
-
-## 🤝 Contributing
-
-This is a demo application. For production use, additional security measures and optimizations should be implemented.
-
----
-
-Built with ❤️ using Angular and snarkjs
