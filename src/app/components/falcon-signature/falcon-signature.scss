@@ -1,43 +1,40 @@
+/* Component specific styles can remain here, or general ones can be moved to app.scss */
+/* Since we moved the container structure to app.html, we just need component specific content styles here */
+
 .falcon-signature-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* No longer strictly needed for layout as parent handles it, but good for specificity */
 }
 
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-
-  h1 {
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
+.info-box {
+  background: #e3f2fd;
+  border-left: 4px solid #2196f3;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  color: #333;
+  
+  code {
+    background: rgba(255, 255, 255, 0.5);
+    padding: 2px 4px;
+    border-radius: 4px;
   }
-
-  .subtitle {
-    font-size: 1.1rem;
-    color: #7f8c8d;
-  }
-}
-
-.content {
-  background: white;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .generation-section,
 .results-section,
 .form-section {
-  margin-bottom: 2rem;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border-left: 4px solid #1E5BA8;
 
   h2 {
+    color: #1E5BA8;
     font-size: 1.5rem;
-    color: #34495e;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #3498db;
+    margin-bottom: 15px;
+    border-bottom: none;
+    padding-bottom: 0;
   }
 }
 
@@ -51,16 +48,16 @@
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 15px;
 
   label {
     display: block;
     font-weight: 600;
-    color: #2c3e50;
-    margin-bottom: 0.5rem;
+    color: #333;
+    margin-bottom: 5px;
 
     .required {
-      color: #e74c3c;
+      color: #f44336;
       margin-left: 0.25rem;
     }
   }
@@ -68,15 +65,16 @@
   input,
   textarea {
     width: 100%;
-    padding: 0.75rem;
-    border: 2px solid #dfe6e9;
-    border-radius: 6px;
-    font-size: 1rem;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Courier New', monospace;
     transition: border-color 0.3s;
 
     &:focus {
       outline: none;
-      border-color: #3498db;
+      border-color: #1E5BA8;
     }
 
     &:disabled {
@@ -87,19 +85,19 @@
 
   textarea {
     resize: vertical;
-    min-height: 120px;
+    min-height: 80px;
   }
   
   .code-font {
     font-family: 'Courier New', monospace;
-    font-size: 0.9rem;
+    font-size: 13px;
   }
 
   .help-text {
     display: block;
-    font-size: 0.875rem;
-    color: #7f8c8d;
-    margin-top: 0.25rem;
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 5px;
   }
 }
 
@@ -114,12 +112,13 @@
 }
 
 .error-message {
-  background-color: #ffe6e6;
-  border: 2px solid #e74c3c;
-  border-radius: 6px;
+  background-color: #f8d7da;
+  border: none;
+  border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  color: #c0392b;
+  color: #721c24;
+  font-weight: bold;
 
   strong {
     display: block;
@@ -130,49 +129,49 @@
 .status-text {
   margin-left: 1rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #155724; /* Success green default */
   
   &.error {
-    color: #c0392b;
+    color: #721c24;
   }
 }
 
 .result-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 15px;
   margin-bottom: 1.5rem;
 }
 
 .result-item {
   label {
-    display: block;
-    font-size: 0.9rem;
-    color: #7f8c8d;
-    margin-bottom: 0.5rem;
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 5px;
     font-weight: 600;
   }
 
   .value-box {
-    background: #f8f9fa;
-    border: 1px solid #dfe6e9;
-    border-radius: 6px;
-    padding: 0.75rem;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 15px;
     word-break: break-all;
-    color: #2c3e50;
+    color: #1E5BA8;
+    font-weight: bold;
+    font-size: 14px; /* Adjust size if needed */
     
     &.code-font {
       font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
     }
   }
   
   &.highlight {
     .value-box {
-      background: #e3f2fd;
+      background: #e3f2fd; /* Light blue for highlight */
       border-color: #2196f3;
       color: #0d47a1;
-      font-weight: bold;
     }
     
     label {
@@ -184,84 +183,86 @@
 .divider {
   margin: 2rem 0;
   border: 0;
-  border-top: 1px solid #dfe6e9;
+  border-top: 1px solid #e0e0e0;
 }
 
 .info-text {
-  color: #7f8c8d;
+  color: #666;
   margin-bottom: 1.5rem;
-  font-style: italic;
 }
 
 .button-group {
   display: flex;
-  gap: 1rem;
+  gap: 10px;
   align-items: center;
-  margin-top: 2rem;
+  margin-top: 10px;
   
   &.left {
     justify-content: flex-start;
   }
   
-  &.center { // default if not specified
+  &.center { 
      justify-content: center;
   }
 
   .btn {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
+    background: #1E5BA8;
+    color: white;
     border: none;
+    padding: 15px 30px;
     border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
 
     &.btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-
+      background: #1E5BA8;
+      
       &:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 5px 15px rgba(30, 91, 168, 0.4);
+        background: #2666B8;
       }
     }
     
     &.btn-success {
-       background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
-       color: white;
+       background: #4caf50;
        
        &:hover:not(:disabled) {
+         background: #45a049;
          transform: translateY(-2px);
-         box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
        }
     }
 
     &:disabled {
-      opacity: 0.6;
+      background: #ccc;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
   }
 }
 
 .btn-secondary {
-  background: #ecf0f1;
-  color: #2c3e50;
-  border: 1px solid #bdc3c7;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: #ecf0f1; /* Use a light grey or just a secondary style */
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 15px 30px; /* Match main buttons */
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 16px;
   
   &:hover {
-    background: #dfe6e9;
+    background: #e0e0e0;
   }
 }
 
 .btn-text {
   background: none;
   border: none;
-  color: #3498db;
+  color: #1E5BA8;
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;

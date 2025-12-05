@@ -1,26 +1,35 @@
-<nav class="main-nav">
-  <div class="nav-container">
-    <div class="nav-brand">
-      <span class="brand-icon">🦅</span>
-      <span class="brand-text">Falcon ZKP Demo</span>
+<div class="app-container">
+  <div class="app-header">
+    <div class="branding-row">
+      <div class="branding">
+        <img src="assets/01com.png" alt="01com Logo" class="logo">
+        <div class="company-info">
+          <span class="company-name">01 Quantum</span>
+          <span class="separator">|</span>
+          <span class="company-tagline">Post-Quantum Cyber Security</span>
+        </div>
+      </div>
+      
+      <div class="nav-links">
+        <a routerLink="/falcon-signature" routerLinkActive="active" class="nav-btn">
+          <span>📝 Falcon Signature</span>
+        </a>
+        <a routerLink="/generate" routerLinkActive="active" class="nav-btn">
+          <span>🔐 Generate Proof</span>
+        </a>
+        <a routerLink="/verify" routerLinkActive="active" class="nav-btn">
+          <span>✓ Verify Proof</span>
+        </a>
+      </div>
     </div>
-    <div class="nav-links">
-      <a routerLink="/falcon-signature" routerLinkActive="active">
-        <span class="nav-icon">📝</span>
-        <span>Falcon Signature</span>
-      </a>
-      <a routerLink="/generate" routerLinkActive="active">
-        <span class="nav-icon">🔐</span>
-        <span>Generate Proof</span>
-      </a>
-      <a routerLink="/verify" routerLinkActive="active">
-        <span class="nav-icon">✓</span>
-        <span>Verify Proof</span>
-      </a>
-    </div>
+    
+    <!-- This area can be for page-specific titles, currently global for demo -->
+    <!-- We can make this dynamic later if needed, for now hardcoded as it seems intended for the whole demo wrapper -->
+    <h1>🔐 Falcon-512 Interactive Demo</h1>
+    <p class="subtitle">Explore post-quantum signatures with full coefficient visibility</p>
   </div>
-</nav>
 
-<main class="main-content">
-  <router-outlet></router-outlet>
-</main>
+  <div class="app-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

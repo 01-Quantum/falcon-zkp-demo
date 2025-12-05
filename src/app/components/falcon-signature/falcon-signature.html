@@ -1,137 +1,137 @@
 <div class="falcon-signature-container">
-  <div class="header">
-    <h1>🦅 Falcon-512 Signature Generator</h1>
-    <p class="subtitle">Generate a valid signature and ZKP inputs directly in the browser</p>
+  <div class="info-box">
+    <strong>ℹ️ About this demo:</strong> Enter a seed string to generate deterministic keypairs. 
+    Signing uses a deterministic RNG seed (all zeros), so the same keypair and message always produce the same signature.
+    The Hash-to-Point shows the challenge point <code>c = hash(nonce + message)</code> that Falcon verification actually checks.
   </div>
 
-  <div class="content">
-    <!-- Generation Section -->
-    <div class="generation-section">
-      <h2>1️⃣ Generate Signature</h2>
-      
-      <div class="form-group">
-        <label for="seedInput">Seed String (Deterministic Keypair)</label>
-        <div class="input-with-button">
-          <input type="text" id="seedInput" [(ngModel)]="seedInput" placeholder="Enter a seed string">
-          <button type="button" class="btn-secondary" (click)="randomizeSeed()">🎲 Random</button>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="messageInput">Message to Sign</label>
-        <textarea id="messageInput" [(ngModel)]="messageInput" rows="3"></textarea>
-      </div>
-
-      <div class="button-group left">
-        <button class="btn btn-primary" (click)="generateSignature()" [disabled]="generating">
-          {{ generating ? '⏳ Generating...' : '🚀 Generate & Sign' }}
-        </button>
-        <span class="status-text" [class.error]="error">{{ statusMessage }}</span>
+  <!-- Generation Section -->
+  <div class="generation-section">
+    <h2>1️⃣ Input Parameters</h2>
+    
+    <div class="form-group">
+      <label for="seedInput">Seed String (will be hashed to 48 bytes):</label>
+      <div class="input-with-button">
+        <input type="text" id="seedInput" [(ngModel)]="seedInput" placeholder="Enter any text as seed">
+        <!-- <button type="button" class="btn-secondary" (click)="randomizeSeed()">🎲 Random Seed</button> -->
       </div>
     </div>
 
-    <!-- Results Section -->
-    <div class="results-section" *ngIf="generatedSignature">
-      <h2>2️⃣ Generated Artifacts</h2>
+    <div class="form-group">
+      <label for="messageInput">Message to Sign:</label>
+      <textarea id="messageInput" [(ngModel)]="messageInput" rows="3">Hello, Falcon-512! This is a test message.</textarea>
+    </div>
+
+    <div class="button-group left">
+      <button class="btn btn-primary" (click)="generateSignature()" [disabled]="generating">
+        {{ generating ? '⏳ Generating...' : '🚀 Generate & Sign' }}
+      </button>
+      <button class="btn btn-secondary" (click)="randomizeSeed()">🎲 Random Seed</button>
+      <span class="status-text" [class.error]="error" *ngIf="statusMessage">{{ statusMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div class="results-section" *ngIf="generatedSignature">
+    <h2>2️⃣ Generated Artifacts</h2>
+    
+    <div class="result-grid">
+      <div class="result-item">
+        <label>Signature (Base64)</label>
+        <div class="value-box code-font">{{ generatedSignature | slice:0:50 }}...</div>
+      </div>
+      <div class="result-item">
+        <label>Public Key (Base64)</label>
+        <div class="value-box code-font">{{ generatedPublicKey | slice:0:50 }}...</div>
+      </div>
+      <div class="result-item highlight">
+        <label>Poseidon Hash of Public Key (Circuit Input)</label>
+        <div class="value-box code-font">{{ pkHash }}</div>
+      </div>
+    </div>
+
+    <button type="button" class="btn-text" (click)="showDetails = !showDetails">
+      {{ showDetails ? '🔽 Hide Details' : '▶️ Show Parsed Details (Coefficients)' }}
+    </button>
+  </div>
+
+  <hr class="divider" *ngIf="generatedSignature">
+
+  <!-- Form Section (Prefilled) -->
+  <form (ngSubmit)="generateAndNavigate()" #signatureForm="ngForm" [style.display]="showDetails ? 'block' : 'none'">
+    <div class="form-section">
+      <h2>3️⃣ ZKP Circuit Inputs (Parsed)</h2>
+      <p class="info-text">These values are automatically extracted from the signature above.</p>
       
-      <div class="result-grid">
-        <div class="result-item">
-          <label>Signature (Base64)</label>
-          <div class="value-box code-font">{{ generatedSignature | slice:0:50 }}...</div>
-        </div>
-        <div class="result-item">
-          <label>Public Key (Base64)</label>
-          <div class="value-box code-font">{{ generatedPublicKey | slice:0:50 }}...</div>
-        </div>
-        <div class="result-item highlight">
-          <label>Poseidon Hash of Public Key (Circuit Input)</label>
-          <div class="value-box code-font">{{ pkHash }}</div>
-        </div>
+      <div class="form-group">
+        <label for="s1">
+          s1 - Signature Polynomial (512 coeffs)
+        </label>
+        <textarea
+          id="s1"
+          name="s1"
+          [(ngModel)]="s1"
+          required
+          rows="4"
+          class="code-font"
+          [disabled]="loading"
+        ></textarea>
       </div>
 
-      <button type="button" class="btn-text" (click)="showDetails = !showDetails">
-        {{ showDetails ? '🔽 Hide Details' : '▶️ Show Parsed Details (Coefficients)' }}
+      <div class="form-group">
+        <label for="h">
+          h - Public Key Polynomial (512 coeffs)
+        </label>
+        <textarea
+          id="h"
+          name="h"
+          [(ngModel)]="h"
+          required
+          rows="4"
+          class="code-font"
+          [disabled]="loading"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="h2p">
+          h2p - Hash-to-Point (512 coeffs)
+        </label>
+        <textarea
+          id="h2p"
+          name="h2p"
+          [(ngModel)]="h2p"
+          required
+          rows="4"
+          class="code-font"
+          [disabled]="loading"
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="in_tx_hash1">Transaction Hash 1 (128-bit)</label>
+          <input type="text" id="in_tx_hash1" name="in_tx_hash1" [(ngModel)]="in_tx_hash1" required class="code-font"/>
+        </div>
+        <div class="form-group">
+          <label for="in_tx_hash2">Transaction Hash 2 (128-bit)</label>
+          <input type="text" id="in_tx_hash2" name="in_tx_hash2" [(ngModel)]="in_tx_hash2" required class="code-font"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+      <strong>❌ Error:</strong> {{ error }}
+    </div>
+
+    <div class="button-group">
+      <button 
+        type="submit" 
+        class="btn btn-success"
+        [disabled]="loading || !isFormValid()"
+      >
+        {{ loading ? '⏳ Processing...' : '⚡ Generate ZK Proof' }}
       </button>
     </div>
-
-    <hr class="divider" *ngIf="generatedSignature">
-
-    <!-- Form Section (Prefilled) -->
-    <form (ngSubmit)="generateAndNavigate()" #signatureForm="ngForm" [style.display]="showDetails ? 'block' : 'none'">
-      <div class="form-section">
-        <h2>3️⃣ ZKP Circuit Inputs (Parsed)</h2>
-        <p class="info-text">These values are automatically extracted from the signature above.</p>
-        
-        <div class="form-group">
-          <label for="s1">
-            s1 - Signature Polynomial (512 coeffs)
-          </label>
-          <textarea
-            id="s1"
-            name="s1"
-            [(ngModel)]="s1"
-            required
-            rows="4"
-            class="code-font"
-            [disabled]="loading"
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="h">
-            h - Public Key Polynomial (512 coeffs)
-          </label>
-          <textarea
-            id="h"
-            name="h"
-            [(ngModel)]="h"
-            required
-            rows="4"
-            class="code-font"
-            [disabled]="loading"
-          ></textarea>
-        </div>
-
-        <div class="form-group">
-          <label for="h2p">
-            h2p - Hash-to-Point (512 coeffs)
-          </label>
-          <textarea
-            id="h2p"
-            name="h2p"
-            [(ngModel)]="h2p"
-            required
-            rows="4"
-            class="code-font"
-            [disabled]="loading"
-          ></textarea>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label for="in_tx_hash1">Transaction Hash 1 (128-bit)</label>
-            <input type="text" id="in_tx_hash1" name="in_tx_hash1" [(ngModel)]="in_tx_hash1" required class="code-font"/>
-          </div>
-          <div class="form-group">
-            <label for="in_tx_hash2">Transaction Hash 2 (128-bit)</label>
-            <input type="text" id="in_tx_hash2" name="in_tx_hash2" [(ngModel)]="in_tx_hash2" required class="code-font"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="error-message" *ngIf="error">
-        <strong>❌ Error:</strong> {{ error }}
-      </div>
-
-      <div class="button-group">
-        <button 
-          type="submit" 
-          class="btn btn-success"
-          [disabled]="loading || !isFormValid()"
-        >
-          {{ loading ? '⏳ Processing...' : '⚡ Generate ZK Proof' }}
-        </button>
-      </div>
-    </form>
-  </div>
+  </form>
 </div>

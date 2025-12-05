@@ -1,94 +1,97 @@
-// Main navigation styles
-.main-nav {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+// Main container
+.app-container {
+  max-width: 98%;
+  margin: 0 auto;
+  padding: 10px;
+}
 
-  .nav-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
+// App Header (Global)
+.app-header {
+  background: #001a33;
+  color: white;
+  padding: 15px 20px;
+  text-align: center;
+  margin-bottom: 1rem;
+  border-radius: 15px 15px 0 0;
+
+  .branding-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
   }
 
-  .nav-brand {
+  .branding {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: white;
+    gap: 15px;
+  }
 
-    .brand-icon {
-      font-size: 2rem;
-    }
+  .logo {
+    height: 40px;
+    width: auto;
+  }
 
-    .brand-text {
-      @media (max-width: 640px) {
-        display: none;
-      }
-    }
+  .company-info {
+    font-size: 0.95em;
+    line-height: 1.4;
+    display: flex;
+    align-items: center;
+  }
+
+  .company-name {
+    font-weight: 600;
+    display: inline;
+  }
+
+  .separator {
+    display: inline;
+    margin: 0 8px;
+  }
+
+  .company-tagline {
+    display: inline;
+    opacity: 0.95;
   }
 
   .nav-links {
     display: flex;
-    gap: 1rem;
+    gap: 10px;
+    z-index: 10;
+    position: relative;
+  }
 
-    a {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.25rem;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-weight: 500;
-      transition: all 0.3s;
-      background: rgba(255, 255, 255, 0.1);
+  .nav-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    display: inline-block;
 
-      .nav-icon {
-        font-size: 1.25rem;
-      }
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
-      }
-
-      &.active {
-        background: white;
-        color: #667eea;
-        font-weight: 600;
-      }
-
-      span:not(.nav-icon) {
-        @media (max-width: 768px) {
-          display: none;
-        }
-      }
+    &.active {
+      background: #1E5BA8;
+      border-color: #1E5BA8;
     }
   }
 }
 
-// Main content area
-.main-content {
-  min-height: calc(100vh - 80px);
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  padding: 2rem 0;
+// Main Content Box
+.app-content {
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  overflow: hidden;
 }
-
-// Global styles
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
-
