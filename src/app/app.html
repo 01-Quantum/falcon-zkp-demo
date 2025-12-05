@@ -20,6 +20,10 @@
         <a routerLink="/verify" routerLinkActive="active" class="nav-btn">
           <span>✓ Verify Proof</span>
         </a>
+        <button class="nav-btn wallet-btn" (click)="connectWallet()" [disabled]="isWalletConnecting">
+          <span *ngIf="!walletAddress">🦊 Connect Wallet</span>
+          <span *ngIf="walletAddress">🟢 {{ formatAddress(walletAddress) }} ❌</span>
+        </button>
       </div>
     </div>
     

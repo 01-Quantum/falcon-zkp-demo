@@ -57,6 +57,11 @@ export class FalconSignatureComponent implements OnInit {
     }
   }
 
+  formatAddress(address: string): string {
+    if (!address) return '';
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  }
+
   bytesToBigInt(bytes: Uint8Array): bigint {
     const hex = this.toHex(bytes);
     if (!hex) return 0n;
