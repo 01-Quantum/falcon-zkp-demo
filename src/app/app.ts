@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BlockchainService } from './services/blockchain.service';
 
 @Component({
   selector: 'app-root',
@@ -11,48 +12,34 @@ import { CommonModule } from '@angular/common';
 })
 export class App {
   title = 'Falcon-512 ZKP Demo';
-  walletAddress: string | null = null;
-  isWalletConnecting = false;
+  
+  // Expose service observables
+  walletAddress$;
+  isAuthorized$;
+  checkingAuth$;
+  isConnecting$;
 
-  async connectWallet() {
-    if (this.walletAddress) {
-      this.disconnectWallet();
-      return;
-    }
+  constructor(public blockchainService: BlockchainService) {
+    this.walletAddress$ = this.blockchainService.walletAddress$;
+    this.isAuthorized$ = this.blockchainService.isAuthorized$;
+    this.checkingAuth$ = this.blockchainService.checkingAuth$;
+    this.isConnecting$ = this.blockchainService.isConnecting$;
+  }
 
-    this.isWalletConnecting = true;
-    try {
-      // Check if MetaMask is installed
-      const ethereum = (window as any).ethereum;
-      if (!ethereum) {
-        alert('MetaMask is not installed. Please install it to use this feature.');
-        return;
-      }
-
-      // Request account access
-      const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
-      
-      if (accounts.length > 0) {
-        this.walletAddress = accounts[0];
-        console.log('Wallet connected:', this.walletAddress);
-      } else {
-        console.warn('No accounts found');
-      }
-    } catch (error: any) {
-      console.error('User denied account access or error occurred:', error);
-      alert('Failed to connect wallet: ' + (error.message || 'Unknown error'));
-    } finally {
-      this.isWalletConnecting = false;
-    }
+  connectWallet() {
+    this.blockchainService.connectWallet();
   }
 
   disconnectWallet() {
-    this.walletAddress = null;
-    console.log('Wallet disconnected');
+    this.blockchainService.disconnectWallet();
   }
 
-  formatAddress(address: string): string {
+  checkAuthorization() {
+    this.blockchainService.checkAuthorization();
+  }
+
+  formatAddress(address: string | null): string {
     if (!address) return '';
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+    return this.blockchainService.formatAddress(address);
   }
 }

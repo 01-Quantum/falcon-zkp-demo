@@ -20,10 +20,20 @@
         <a routerLink="/verify" routerLinkActive="active" class="nav-btn">
           <span>✓ Verify Proof</span>
         </a>
-        <button class="nav-btn wallet-btn" (click)="connectWallet()" [disabled]="isWalletConnecting">
-          <span *ngIf="!walletAddress">🦊 Connect Wallet</span>
-          <span *ngIf="walletAddress">🟢 {{ formatAddress(walletAddress) }} ❌</span>
+        <button class="nav-btn wallet-btn" (click)="connectWallet()" [disabled]="isConnecting$ | async">
+          <span *ngIf="!(walletAddress$ | async)">🦊 Connect Wallet</span>
+          <span *ngIf="walletAddress$ | async">🟢 {{ formatAddress(walletAddress$ | async) }} ❌</span>
         </button>
+
+        <div class="auth-status" *ngIf="walletAddress$ | async">
+          <span class="status-badge" [class.unlocked]="isAuthorized$ | async" [class.locked]="!(isAuthorized$ | async) && (isAuthorized$ | async) !== null" [class.unknown]="(isAuthorized$ | async) === null">
+            <span *ngIf="checkingAuth$ | async">🔄 Checking...</span>
+            <span *ngIf="!(checkingAuth$ | async)">
+              {{ (isAuthorized$ | async) === null ? '❓ Unknown' : ((isAuthorized$ | async) ? '🔓 Unlocked' : '🔒 Locked') }}
+            </span>
+          </span>
+          <button class="btn-refresh" (click)="checkAuthorization()" title="Refresh Status" [disabled]="checkingAuth$ | async">🔄</button>
+        </div>
       </div>
     </div>
     
