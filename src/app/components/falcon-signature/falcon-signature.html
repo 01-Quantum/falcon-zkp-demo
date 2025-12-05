@@ -37,6 +37,10 @@
     
     <div class="result-grid">
       <div class="result-item">
+        <label>Message SHA256 (Hex)</label>
+        <div class="value-box code-font">{{ messageHashHex }}</div>
+      </div>
+      <div class="result-item">
         <label>Signature (Base64)</label>
         <div class="value-box code-font">{{ generatedSignature | slice:0:50 }}...</div>
       </div>
@@ -110,12 +114,14 @@
 
       <div class="form-row">
         <div class="form-group">
-          <label for="in_tx_hash1">Transaction Hash 1 (128-bit)</label>
+          <label for="in_tx_hash1">Transaction Hash 1 (Low 128-bit)</label>
           <input type="text" id="in_tx_hash1" name="in_tx_hash1" [(ngModel)]="in_tx_hash1" required class="code-font"/>
+          <small class="help-text code-font" style="color: #1E5BA8;">{{ getHexValue(in_tx_hash1) }}</small>
         </div>
         <div class="form-group">
-          <label for="in_tx_hash2">Transaction Hash 2 (128-bit)</label>
+          <label for="in_tx_hash2">Transaction Hash 2 (High 128-bit)</label>
           <input type="text" id="in_tx_hash2" name="in_tx_hash2" [(ngModel)]="in_tx_hash2" required class="code-font"/>
+          <small class="help-text code-font" style="color: #1E5BA8;">{{ getHexValue(in_tx_hash2) }}</small>
         </div>
       </div>
     </div>
