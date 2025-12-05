@@ -58,8 +58,13 @@ export class ProofVerificationComponent implements OnInit {
       // If in manual mode, parse the input
       if (this.manualMode) {
         try {
+          // Use the edited inputs from the textareas
           proofToVerify = JSON.parse(this.proofInput);
           signalsToVerify = JSON.parse(this.publicSignalsInput);
+          
+          // Update component state to reflect edits
+          this.proof = proofToVerify;
+          this.publicSignals = signalsToVerify;
         } catch (parseError) {
           throw new Error('Invalid JSON format for proof or public signals');
         }

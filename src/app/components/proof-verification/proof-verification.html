@@ -1,81 +1,35 @@
-<div class="container">
-  <div class="header">
-    <h1>✅ Proof Verification</h1>
-    <p class="subtitle">Verify Zero-Knowledge Proofs Against Verification Key</p>
+<div class="proof-verification-container">
+  <div class="info-box">
+    <strong>ℹ️ About Verification:</strong> Verify Zero-Knowledge Proofs (Groth16) for Falcon-512 signatures. 
+    This ensures the proof is valid without revealing the underlying signature data.
   </div>
 
-  <div class="card">
-    <div class="action-buttons">
+  <!-- 1. Actions Section -->
+  <div class="form-section">
+    <h2>1️⃣ Verification Actions</h2>
+    
+    <div class="button-group left" style="margin-bottom: 20px;">
       <button class="btn btn-secondary" (click)="goBack()">
         ← Back to Generator
       </button>
       <button class="btn btn-secondary" (click)="loadExampleProof()">
         Load Example Proof
       </button>
-      <button class="btn btn-outline" (click)="toggleMode()">
-        {{ manualMode ? 'View Mode' : 'Edit Mode (Tamper)' }}
+      <button class="btn btn-secondary" (click)="toggleMode()">
+        {{ manualMode ? 'Switch to View Mode' : 'Switch to Edit Mode (Tamper)' }}
       </button>
     </div>
 
-    <!-- Display Mode -->
-    <div *ngIf="!manualMode && proof" class="proof-display">
-      <div class="section">
-        <h3>Public Signals (Inputs)</h3>
-        <div class="public-signals-grid">
-          <div class="signal-item" *ngFor="let signal of publicSignals; let i = index">
-            <strong>Signal {{ i }}:</strong>
-            <code>{{ signal }}</code>
-          </div>
-        </div>
-        <button 
-          class="btn-copy" 
-          (click)="copyToClipboard(JSON.stringify(publicSignals), 'Public Signals')"
-        >
-          📋 Copy
-        </button>
-      </div>
-
-      <div class="section">
-        <h3>Proof Data</h3>
-        <div class="proof-data">
-          <div class="proof-section">
-            <strong>π_a:</strong>
-            <pre>{{ proof?.pi_a | json }}</pre>
-          </div>
-          <div class="proof-section">
-            <strong>π_b:</strong>
-            <pre>{{ proof?.pi_b | json }}</pre>
-          </div>
-          <div class="proof-section">
-            <strong>π_c:</strong>
-            <pre>{{ proof?.pi_c | json }}</pre>
-          </div>
-          <div class="proof-section">
-            <strong>Protocol:</strong>
-            <code>{{ proof?.protocol }}</code>
-          </div>
-          <div class="proof-section">
-            <strong>Curve:</strong>
-            <code>{{ proof?.curve }}</code>
-          </div>
-        </div>
-        <button 
-          class="btn-copy" 
-          (click)="copyToClipboard(JSON.stringify(proof, null, 2), 'Proof')"
-        >
-          📋 Copy
-        </button>
-      </div>
-    </div>
-
     <!-- Manual Input Mode -->
-    <div *ngIf="manualMode" class="manual-input">
+    <div *ngIf="manualMode" class="manual-input-group">
+      <h3>Manual Proof Input</h3>
       <div class="form-group">
         <label for="proofInput">Proof JSON</label>
         <textarea
           id="proofInput"
           [(ngModel)]="proofInput"
-          rows="12"
+          rows="8"
+          class="code-font"
           placeholder='{"pi_a": [...], "pi_b": [...], "pi_c": [...], "protocol": "groth16", "curve": "bn128"}'
           [disabled]="loading"
         ></textarea>
@@ -86,15 +40,77 @@
         <textarea
           id="publicSignalsInput"
           [(ngModel)]="publicSignalsInput"
-          rows="6"
+          rows="4"
+          class="code-font"
           placeholder='["signal1", "signal2", "signal3"]'
           [disabled]="loading"
         ></textarea>
       </div>
+
+      <div class="button-group center" style="margin-top: 20px;">
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          (click)="verifyProof()"
+          [disabled]="loading"
+        >
+          <span *ngIf="!loading">🔍 Verify Proof Now</span>
+          <span *ngIf="loading">⏳ Verifying...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Proof Details Section -->
+  <div class="results-section" *ngIf="!manualMode && proof">
+    <h2>2️⃣ Proof Details</h2>
+    
+    <div class="result-grid">
+      <!-- Public Signals -->
+      <div class="result-item highlight">
+        <div class="label-row">
+          <label>Public Signals ({{ publicSignals.length }})</label>
+          <button class="btn-copy-inline" (click)="copyToClipboard(JSON.stringify(publicSignals), 'Public Signals')">📋</button>
+        </div>
+        <div class="value-box code-font" style="max-height: 200px; overflow-y: auto;">
+          <div *ngFor="let signal of publicSignals; let i = index">
+            <strong>[{{i}}]:</strong> {{ signal }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Proof Data -->
+      <div class="result-item">
+        <div class="label-row">
+          <label>Proof Data (π_a, π_b, π_c)</label>
+          <button class="btn-copy-inline" (click)="copyToClipboard(JSON.stringify(proof, null, 2), 'Proof')">📋</button>
+        </div>
+        <div class="value-box code-font" style="max-height: 200px; overflow-y: auto;">
+          <div><strong>Protocol:</strong> {{ proof?.protocol }}</div>
+          <div><strong>Curve:</strong> {{ proof?.curve }}</div>
+          <div style="margin-top: 5px;"><strong>π_a:</strong> {{ proof?.pi_a | json }}</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Verification Results -->
-    <div *ngIf="verificationResult !== null" class="result-box" [class.success]="verificationResult" [class.failure]="!verificationResult">
+    <div class="button-group center" style="margin-top: 20px;">
+      <button 
+        type="button" 
+        class="btn btn-primary" 
+        (click)="verifyProof()"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">🔍 Verify Proof Now</span>
+        <span *ngIf="loading">⏳ Verifying...</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Results Section -->
+  <div class="results-section" *ngIf="verificationResult !== null">
+    <h2>3️⃣ Verification Result</h2>
+    
+    <div class="result-box" [class.success]="verificationResult" [class.failure]="!verificationResult">
       <div class="result-icon">
         {{ verificationResult ? '✅' : '❌' }}
       </div>
@@ -104,63 +120,35 @@
           The zero-knowledge proof has been successfully verified against the verification key.
           The public inputs are authentic and the proof is cryptographically valid.
         </p>
-        <p *ngIf="!verificationResult">
-          The proof verification failed. This could mean:
-        </p>
-        <ul *ngIf="!verificationResult">
-          <li>The proof was tampered with</li>
-          <li>The public signals don't match the proof</li>
-          <li>The verification key doesn't match the proving key</li>
-        </ul>
+        <div *ngIf="!verificationResult">
+          <p>The proof verification failed. This could mean:</p>
+          <ul>
+            <li>The proof was tampered with</li>
+            <li>The public signals don't match the proof</li>
+            <li>The verification key doesn't match the proving key</li>
+          </ul>
+        </div>
       </div>
     </div>
 
-    <!-- Error Message -->
-    <div class="error-message" *ngIf="error">
-      <strong>Error:</strong> {{ error }}
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="form-actions">
+    <div class="button-group center">
       <button 
         type="button" 
-        class="btn btn-primary" 
-        (click)="verifyProof()"
-        [disabled]="loading || (!proof && !manualMode)"
-      >
-        <span *ngIf="!loading">🔍 Verify Proof</span>
-        <span *ngIf="loading">⏳ Verifying...</span>
-      </button>
-      
-      <button 
-        type="button" 
-        class="btn btn-outline" 
+        class="btn btn-secondary" 
         (click)="clearResults()"
         [disabled]="loading"
-        *ngIf="verificationResult !== null"
       >
         Clear Results
       </button>
     </div>
-
-    <div class="info-box" *ngIf="loading">
-      <p>🔐 Verifying proof against verification key...</p>
-    </div>
   </div>
 
-  <!-- Verification Key Info -->
-  <div class="card info-card">
-    <h3>ℹ️ About Verification</h3>
-    <p>
-      This verification process uses the Groth16 proving system to verify zero-knowledge proofs
-      for Falcon-512 post-quantum signatures. The verification key is loaded from the circuit
-      configuration and ensures that the proof is valid without revealing the underlying signature data.
-    </p>
-    <div class="tech-stack">
-      <span class="badge">Groth16</span>
-      <span class="badge">bn128</span>
-      <span class="badge">Falcon-512</span>
-      <span class="badge">snarkjs</span>
-    </div>
+  <div class="info-box" *ngIf="loading">
+    <p>🔐 Verifying proof against verification key...</p>
   </div>
+
+  <div class="error-message" *ngIf="error">
+    <strong>❌ Error:</strong> {{ error }}
+  </div>
+
 </div>

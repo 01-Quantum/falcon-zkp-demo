@@ -1,200 +1,130 @@
-<div class="container">
-  <div class="header">
-    <h1>🔐 Falcon-512 ZKP Proof Generator</h1>
-    <p class="subtitle">Generate Zero-Knowledge Proofs for Falcon-512 Signatures</p>
+<div class="proof-generation-container">
+  <div class="info-box">
+    <strong>ℹ️ About Proof Generation:</strong> This form accepts the Falcon-512 signature components and generates a Zero-Knowledge Proof (Groth16).
+    The circuit computes derived values automatically.
   </div>
 
-  <div class="card">
-    <div class="example-buttons">
+  <div class="form-section">
+    <h2>1️⃣ Load Inputs</h2>
+    <div class="button-group left" style="margin-bottom: 20px;">
       <button class="btn btn-secondary" (click)="loadExample(1)" [disabled]="loading">
         Load Example 1
       </button>
       <button class="btn btn-secondary" (click)="loadExample(2)" [disabled]="loading">
         Load Example 2
       </button>
-      <button class="btn btn-outline" (click)="clearForm()" [disabled]="loading">
+      <button class="btn btn-secondary" (click)="clearForm()" [disabled]="loading">
         Clear Form
       </button>
     </div>
 
     <form (ngSubmit)="generateProof()" #proofForm="ngForm">
-      <div class="form-section">
-        <h3>Falcon-512 Signature Inputs</h3>
-        <p class="info-text">
-          Enter the raw signature components. The circuit will automatically compute derived values 
-          (h_product_inv, h2p_d, pk_hash_in, in_c_hash) during proof generation.
-        </p>
-        
-        <div class="form-group">
-          <label for="s1">
-            s1 (Signature Component) 
-            <span class="required">*</span>
-          </label>
-          <textarea
-            id="s1"
-            name="s1"
-            [(ngModel)]="s1"
-            required
-            rows="6"
-            placeholder="[1, 2, 3, ..., 512]"
-            [disabled]="loading"
-          ></textarea>
-          <span class="help-text">Array of 512 integers - Falcon signature component</span>
-        </div>
+      <h3>Falcon-512 Signature Inputs</h3>
+      
+      <div class="form-group">
+        <label for="s1">
+          s1 (Signature Component) <span class="required">*</span>
+        </label>
+        <textarea
+          id="s1"
+          name="s1"
+          [(ngModel)]="s1"
+          required
+          rows="4"
+          class="code-font"
+          placeholder="[1, 2, 3, ..., 512]"
+          [disabled]="loading"
+        ></textarea>
+      </div>
 
-        <div class="form-group">
-          <label for="h_hat">
-            h_hat (Hash / Public Key Component)
-            <span class="required">*</span>
-          </label>
-          <textarea
-            id="h_hat"
-            name="h_hat"
-            [(ngModel)]="h_hat"
-            required
-            rows="6"
-            placeholder="[1, 2, 3, ..., 512]"
-            [disabled]="loading"
-          ></textarea>
-          <span class="help-text">Array of 512 integers - Can be h_hat (NTT-transformed) or h (will be transformed)</span>
-        </div>
+      <div class="form-group">
+        <label for="h_hat">
+          h_hat (Hash / Public Key Component) <span class="required">*</span>
+        </label>
+        <textarea
+          id="h_hat"
+          name="h_hat"
+          [(ngModel)]="h_hat"
+          required
+          rows="4"
+          class="code-font"
+          placeholder="[1, 2, 3, ..., 512]"
+          [disabled]="loading"
+        ></textarea>
+      </div>
 
+      <div class="form-group">
+        <label for="h_product_inv">
+          h_product_inv (Hash Product Inverse) <span class="required">*</span>
+        </label>
+        <textarea
+          id="h_product_inv"
+          name="h_product_inv"
+          [(ngModel)]="h_product_inv"
+          required
+          rows="4"
+          class="code-font"
+          placeholder="[1, 2, 3, ..., 512]"
+          [disabled]="loading"
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="h2p_d">
+          h2p_d (Hash-to-Point with Delta) <span class="required">*</span>
+        </label>
+        <textarea
+          id="h2p_d"
+          name="h2p_d"
+          [(ngModel)]="h2p_d"
+          required
+          rows="4"
+          class="code-font"
+          placeholder="[1, 2, 3, ..., 512]"
+          [disabled]="loading"
+        ></textarea>
+      </div>
+
+      <h3>Transaction Hashes</h3>
+      <div class="form-row">
         <div class="form-group">
-          <label for="h2p_d">
-            h2p_d (Hash-to-Point with Delta)
-            <span class="required">*</span>
-          </label>
-          <textarea
-            id="h2p_d"
-            name="h2p_d"
-            [(ngModel)]="h2p_d"
-            required
-            rows="6"
-            placeholder="[1, 2, 3, ..., 512]"
-            [disabled]="loading"
-          ></textarea>
-          <span class="help-text">Array of 512 integers - h2p + SHA256(tx_hash1, tx_hash2)</span>
+          <label for="in_tx_hash1">Transaction Hash 1 (128-bit) <span class="required">*</span></label>
+          <input type="text" id="in_tx_hash1" name="in_tx_hash1" [(ngModel)]="in_tx_hash1" required class="code-font" [disabled]="loading"/>
+        </div>
+        <div class="form-group">
+          <label for="in_tx_hash2">Transaction Hash 2 (128-bit) <span class="required">*</span></label>
+          <input type="text" id="in_tx_hash2" name="in_tx_hash2" [(ngModel)]="in_tx_hash2" required class="code-font" [disabled]="loading"/>
         </div>
       </div>
 
-      <div class="form-section">
-        <h3>Transaction Hashes</h3>
-
-        <div class="form-group">
-          <label for="in_tx_hash1">
-            Transaction Hash 1 
-            <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="in_tx_hash1"
-            name="in_tx_hash1"
-            [(ngModel)]="in_tx_hash1"
-            required
-            placeholder="340282366920938463463374607431768211455"
-            [disabled]="loading"
-          />
-          <span class="help-text">Large integer (128-bit)</span>
-        </div>
-
-        <div class="form-group">
-          <label for="in_tx_hash2">
-            Transaction Hash 2 
-            <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="in_tx_hash2"
-            name="in_tx_hash2"
-            [(ngModel)]="in_tx_hash2"
-            required
-            placeholder="340282366920938463463374607431768211455"
-            [disabled]="loading"
-          />
-          <span class="help-text">Large integer (128-bit)</span>
-        </div>
-
-        <div class="form-group">
-          <label for="pk_hash_in">
-            Public Key Hash Input
-            <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="pk_hash_in"
-            name="pk_hash_in"
-            [(ngModel)]="pk_hash_in"
-            required
-            placeholder="15698432585018349148141385555987909735693447009573780666312477420204886482127"
-            [disabled]="loading"
-          />
-          <span class="help-text">Large integer (256-bit)</span>
-        </div>
-
-        <div class="form-group">
-          <label for="in_c_hash">
-            Input C Hash
-            <span class="required">*</span>
-          </label>
-          <input
-            type="text"
-            id="in_c_hash"
-            name="in_c_hash"
-            [(ngModel)]="in_c_hash"
-            required
-            placeholder="11608955942522008439335701875302089244868783241618832946595830727811738997256"
-            [disabled]="loading"
-          />
-          <span class="help-text">Large integer (256-bit)</span>
-        </div>
+      <div class="form-group">
+        <label for="pk_hash_in">Public Key Hash Input <span class="required">*</span></label>
+        <input type="text" id="pk_hash_in" name="pk_hash_in" [(ngModel)]="pk_hash_in" required class="code-font" [disabled]="loading"/>
       </div>
 
-      <div class="info-box" *ngIf="!loading && !error">
-        <p>💡 <strong>Tip:</strong> Click "Load Example 1" or "Load Example 2" to auto-fill the form with pre-computed values.</p>
-        <p>The circuit will automatically compute the derived values needed for proof generation.</p>
+      <div class="form-group">
+        <label for="in_c_hash">Input C Hash <span class="required">*</span></label>
+        <input type="text" id="in_c_hash" name="in_c_hash" [(ngModel)]="in_c_hash" required class="code-font" [disabled]="loading"/>
+      </div>
+
+      <div class="info-box" *ngIf="loading">
+        <p>⚡ Computing witness and generating zero-knowledge proof...</p>
+        <p>This process may take 5-15 seconds depending on your device.</p>
       </div>
 
       <div class="error-message" *ngIf="error">
-        <strong>Error:</strong> {{ error }}
+        <strong>❌ Error:</strong> {{ error }}
       </div>
 
-      <div class="form-actions">
+      <div class="button-group">
         <button 
           type="submit" 
           class="btn btn-primary" 
           [disabled]="!proofForm.valid || loading"
         >
-          <span *ngIf="!loading">🚀 Generate Proof</span>
-          <span *ngIf="loading">⏳ Generating Proof...</span>
+          {{ loading ? '⏳ Generating Proof...' : '🚀 Generate Proof' }}
         </button>
       </div>
-
-      <div class="info-box loading" *ngIf="loading">
-        <p>⚡ Computing witness and generating zero-knowledge proof...</p>
-        <p>This process may take 5-15 seconds depending on your device.</p>
-        <p><strong>Step 1:</strong> Loading circuit and inputs...</p>
-        <p><strong>Step 2:</strong> Computing witness from WASM circuit...</p>
-        <p><strong>Step 3:</strong> Generating Groth16 proof...</p>
-      </div>
     </form>
-  </div>
-
-  <div class="card info-card">
-    <h3>ℹ️ About Falcon-512 Inputs</h3>
-    <p>
-      This form accepts all required inputs for Falcon-512 zero-knowledge proof generation:
-    </p>
-    <ul>
-      <li><strong>s1:</strong> The signature polynomial (512 coefficients)</li>
-      <li><strong>h_hat:</strong> The hash/public key component (512 coefficients, NTT-transformed)</li>
-      <li><strong>h_product_inv:</strong> Hash product inverse (512 coefficients)</li>
-      <li><strong>h2p_d:</strong> Hash-to-point with delta (512 coefficients)</li>
-      <li><strong>in_tx_hash1, in_tx_hash2:</strong> Transaction identifiers (128-bit integers)</li>
-      <li><strong>pk_hash_in:</strong> Public key hash input (256-bit integer)</li>
-      <li><strong>in_c_hash:</strong> Input C hash (256-bit integer)</li>
-    </ul>
-    <p>
-      <strong>Tip:</strong> Use "Load Example 1" or "Load Example 2" buttons to populate the form with valid test data.
-    </p>
   </div>
 </div>
