@@ -27,6 +27,8 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.generation-section,
+.results-section,
 .form-section {
   margin-bottom: 2rem;
 
@@ -36,6 +38,15 @@
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid #3498db;
+  }
+}
+
+.input-with-button {
+  display: flex;
+  gap: 10px;
+  
+  input {
+    flex: 1;
   }
 }
 
@@ -61,7 +72,6 @@
     border: 2px solid #dfe6e9;
     border-radius: 6px;
     font-size: 1rem;
-    font-family: 'Courier New', monospace;
     transition: border-color 0.3s;
 
     &:focus {
@@ -78,6 +88,11 @@
   textarea {
     resize: vertical;
     min-height: 120px;
+  }
+  
+  .code-font {
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
   }
 
   .help-text {
@@ -112,15 +127,89 @@
   }
 }
 
+.status-text {
+  margin-left: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  
+  &.error {
+    color: #c0392b;
+  }
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.result-item {
+  label {
+    display: block;
+    font-size: 0.9rem;
+    color: #7f8c8d;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .value-box {
+    background: #f8f9fa;
+    border: 1px solid #dfe6e9;
+    border-radius: 6px;
+    padding: 0.75rem;
+    word-break: break-all;
+    color: #2c3e50;
+    
+    &.code-font {
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+    }
+  }
+  
+  &.highlight {
+    .value-box {
+      background: #e3f2fd;
+      border-color: #2196f3;
+      color: #0d47a1;
+      font-weight: bold;
+    }
+    
+    label {
+      color: #2196f3;
+    }
+  }
+}
+
+.divider {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid #dfe6e9;
+}
+
+.info-text {
+  color: #7f8c8d;
+  margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
 .button-group {
   display: flex;
   gap: 1rem;
-  justify-content: center;
+  align-items: center;
   margin-top: 2rem;
+  
+  &.left {
+    justify-content: flex-start;
+  }
+  
+  &.center { // default if not specified
+     justify-content: center;
+  }
 
   .btn {
-    padding: 1rem 2rem;
-    font-size: 1.1rem;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
     border: none;
     border-radius: 8px;
@@ -135,85 +224,51 @@
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
       }
+    }
+    
+    &.btn-success {
+       background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+       color: white;
+       
+       &:hover:not(:disabled) {
+         transform: translateY(-2px);
+         box-shadow: 0 4px 12px rgba(46, 204, 113, 0.4);
+       }
+    }
 
-      &:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-      }
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
   }
 }
 
-.info-card {
-  background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
-  border: 1px solid #667eea40;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-top: 2rem;
-
-  h3 {
-    color: #667eea;
-    margin-bottom: 1rem;
-    font-size: 1.25rem;
-  }
-
-  h4 {
-    color: #34495e;
-    margin-top: 1rem;
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
-
-  p {
-    color: #2c3e50;
-    line-height: 1.6;
-    margin-bottom: 1rem;
-  }
-
-  ul {
-    list-style-type: none;
-    padding-left: 0;
-    margin-bottom: 1rem;
-
-    li {
-      padding: 0.5rem 0;
-      padding-left: 1.5rem;
-      position: relative;
-      color: #34495e;
-
-      &:before {
-        content: "→";
-        position: absolute;
-        left: 0;
-        color: #667eea;
-        font-weight: bold;
-      }
-
-      strong {
-        color: #667eea;
-      }
-
-      code {
-        background: rgba(102, 126, 234, 0.1);
-        padding: 0.2rem 0.4rem;
-        border-radius: 3px;
-        font-family: 'Courier New', monospace;
-        font-size: 0.9rem;
-      }
-    }
-  }
-
-  .note {
-    background: white;
-    padding: 1rem;
-    border-radius: 6px;
-    border-left: 4px solid #667eea;
-    margin-top: 1rem;
-
-    strong {
-      color: #667eea;
-    }
+.btn-secondary {
+  background: #ecf0f1;
+  color: #2c3e50;
+  border: 1px solid #bdc3c7;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  
+  &:hover {
+    background: #dfe6e9;
   }
 }
 
+.btn-text {
+  background: none;
+  border: none;
+  color: #3498db;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 0;
+  margin-top: 1rem;
+  
+  &:hover {
+    text-decoration: underline;
+  }
+}

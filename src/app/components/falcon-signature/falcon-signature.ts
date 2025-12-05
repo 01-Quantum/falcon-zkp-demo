@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FalconCircuitInputsService } from '../../services/falcon-circuit-inputs.service';
+import { FalconWasmService } from '../../services/falcon-wasm.service';
 
 @Component({
   selector: 'app-falcon-signature',
@@ -11,28 +12,188 @@ import { FalconCircuitInputsService } from '../../services/falcon-circuit-inputs
   templateUrl: './falcon-signature.html',
   styleUrls: ['./falcon-signature.scss']
 })
-export class FalconSignatureComponent {
-  // Simplified Falcon signature inputs
-  s1: string = '[35, 80, -134, 15, -70, 78, -197, 226, -11, 68, 165, -116, -198, -68, 201, 25, 166, 405, -238, -244, -272, -312, 130, -66, -4, 35, -135, 379, -144, -209, 143, 240, 212, -298, -22, 190, -90, 74, -128, -314, 203, 272, 302, -179, 14, -33, 71, 179, -188, -40, -194, -213, 123, -127, -192, 142, 214, 235, 285, -114, 287, 111, 138, 177, 142, -262, -259, 211, -182, -102, 192, -79, 161, 8, -12, 97, -241, -248, -119, 275, -13, 177, 22, -70, 186, -11, 31, -200, -230, 89, 151, -239, -213, -160, 147, 208, 61, -152, -186, 48, -31, 17, 36, -289, 26, 38, -237, 56, 138, -159, 34, -27, 50, -33, 19, 54, 20, -116, 116, 5, -34, -102, -96, 10, 104, -136, -57, 203, 99, 138, 65, 147, 56, 157, 308, -146, -20, 111, 66, -11, -41, -31, -76, 120, 43, -53, 374, -108, -107, 72, 106, 192, 111, -150, 46, 104, -112, 18, 17, -61, -182, -236, 6, 258, 107, -185, 16, 155, -166, -302, 108, 8, 204, 73, 224, 54, 25, 115, 320, 66, -87, 28, 157, 212, -67, 27, 224, 16, -271, -199, 81, -83, 205, -19, 33, -253, -53, 1, -70, 103, -54, -197, 190, -8, -233, 109, 85, 229, -25, 222, -236, 266, -205, -239, 158, -58, -212, -176, 84, 8, -186, 325, -49, -412, -17, 14, 41, -89, -182, -59, -40, 59, -158, -88, 127, 254, 70, 52, -10, 58, -390, 90, 102, 30, -46, 50, -127, -190, 70, -20, 46, 98, 179, -195, 250, 35, 146, 166, 234, -7, 2, 94, -107, -55, 89, -12, -334, -104, 242, 103, -225, -183, 102, 44, 88, 11, -167, 177, 149, -144, 176, -338, -112, 248, -36, 0, 27, -5, 189, 58, 53, 209, -54, 83, -105, -94, -188, 164, -163, 176, 32, -1, 61, 147, -16, 59, 66, -210, -114, 292, 260, 215, 33, -104, -522, -82, 202, -92, -265, -70, 138, 231, 147, -18, 181, 136, 0, -76, -167, 68, 93, 93, 120, -139, -182, 21, 68, -53, 56, -72, -108, 33, -160, 281, -28, 12, 35, 260, -42, 249, 143, 378, 44, 134, -154, -91, 186, -7, -52, 34, -278, 47, 115, 145, 273, -51, 33, 36, -38, 396, -13, 129, -147, 37, -209, -349, 96, 152, 121, 233, -239, 253, 56, -180, -154, 24, 63, -253, 114, -77, 94, 57, 127, -89, 79, -95, 375, -61, 245, -36, -80, 161, -177, -106, -84, -44, 9, -71, 195, -298, -135, -194, -43, 275, 49, 6, -26, 224, 73, 68, -225, -115, -177, 12, 246, 1, 27, -21, 313, -11, -67, -319, -396, 238, -57, -277, 35, -29, -32, 21, -317, -59, 8, 43, 239, 165, 167, 329, 119, -104, -280, 50, -86, -16, -48, -9, -128, 72, -32, -153, 168, 64, -54, -37, -75, 71, -9, 167, 273, -131, -197, -36, 289, -40, -544, 72, -105, 154, -113, 80, 24, -7, 42, -74, -357, 36, -52, -222, 31, -121, 149, -41, 307, -31, -91, -12, 166, -61, -554, -336, 116, -15, -98, -23, 153, 250, 70, 13, 116, -17, -79, 76]';
-  h: string = '[12024, 8450, 5065, 6006, 5557, 4316, 7030, 5615, 1726, 2452, 5146, 9346, 7564, 281, 2582, 4474, 5443, 3450, 6061, 11016, 2611, 144, 9859, 4160, 7013, 2207, 4628, 8767, 1483, 2154, 2394, 11259, 3237, 4607, 6019, 6244, 2603, 5927, 497, 428, 3418, 8684, 9798, 11016, 5511, 11584, 11425, 6541, 3586, 11967, 11887, 12080, 3638, 11591, 1762, 5663, 538, 3231, 731, 819, 4427, 2348, 3797, 1361, 11424, 9907, 8841, 1712, 2703, 4226, 6842, 2164, 2749, 2165, 8387, 8367, 11901, 4871, 9824, 8201, 10405, 4343, 7222, 3271, 1583, 9747, 7545, 11196, 7238, 3696, 10772, 5311, 9800, 10432, 6376, 4048, 7188, 3982, 1181, 1009, 11214, 7235, 4434, 1660, 974, 7858, 3213, 7581, 794, 8108, 3719, 2083, 5667, 8927, 85, 2198, 10698, 9200, 7513, 9878, 278, 3993, 10268, 2976, 4279, 4186, 287, 4720, 3167, 3912, 11818, 2733, 1207, 2090, 3829, 11887, 3891, 8380, 5121, 1980, 10959, 11094, 5435, 11530, 2082, 2549, 7179, 220, 12204, 5481, 8896, 2654, 777, 8785, 2817, 7808, 11714, 5302, 5392, 11358, 10484, 2766, 11311, 10064, 6282, 1439, 8326, 1948, 4862, 2076, 5980, 1537, 6243, 6183, 11556, 7339, 9980, 10843, 5610, 3421, 9534, 3828, 5592, 6356, 3795, 12006, 4987, 6168, 2759, 4836, 2939, 3862, 9192, 7813, 10723, 7315, 4296, 9417, 10492, 4218, 3160, 11638, 3688, 6154, 2333, 3168, 1966, 8423, 476, 5591, 9926, 8262, 1707, 270, 6188, 6282, 5067, 3844, 11714, 3130, 1419, 2162, 7754, 8827, 9681, 9202, 10364, 9674, 2067, 5261, 9783, 6528, 3218, 174, 4481, 6533, 5017, 6138, 11714, 5700, 3310, 9560, 11343, 7538, 7566, 10313, 10699, 4709, 2486, 1429, 901, 5980, 446, 7404, 9707, 2815, 3447, 11870, 8711, 10598, 9303, 5900, 11654, 11639, 6200, 2906, 7929, 4255, 10298, 7505, 4868, 668, 8449, 1207, 5726, 1769, 9951, 8995, 9849, 10811, 6411, 1604, 6264, 2559, 7811, 10244, 2862, 4576, 9626, 9714, 2649, 657, 11626, 7876, 11412, 8785, 11769, 11217, 6023, 2674, 8995, 472, 10552, 5291, 1553, 6794, 8284, 3494, 962, 6779, 699, 11875, 1942, 5413, 2046, 8706, 91, 9057, 11373, 11088, 5605, 10093, 12010, 6659, 8942, 3470, 8189, 11535, 3244, 345, 10763, 1195, 2832, 9188, 6085, 8924, 6414, 3566, 9763, 7393, 10672, 7927, 1295, 5385, 10209, 8518, 1312, 803, 5728, 6046, 3426, 597, 4614, 6413, 617, 3483, 6630, 12109, 4539, 1564, 2521, 4804, 6445, 3585, 7338, 9394, 12120, 8632, 7300, 11878, 12234, 11161, 7182, 9036, 3038, 5008, 12002, 6700, 6029, 7234, 919, 10372, 4712, 6607, 3791, 190, 11074, 4383, 3060, 12067, 10276, 11007, 5845, 4834, 10552, 348, 598, 5486, 5839, 3208, 5948, 3574, 7633, 4000, 3389, 11058, 5797, 11953, 12005, 4367, 6495, 1447, 5103, 2555, 6393, 10774, 11358, 8685, 6820, 11994, 5955, 9550, 2369, 296, 240, 1029, 11179, 9785, 9645, 2517, 7057, 3844, 223, 961, 2981, 3370, 9678, 7411, 5453, 4158, 9731, 4963, 8191, 2320, 5940, 11027, 5984, 3477, 11684, 6555, 63, 2808, 2655, 3675, 3499, 5986, 8740, 9012, 4084, 3620, 5999, 5474, 10085, 6385, 11484, 12127, 2581, 2721, 9195, 1367, 6601, 6145, 4794, 8917, 7159, 3106, 10196, 11790, 1990, 6231, 9334, 9058, 9, 6756, 282, 11588, 3907, 5009, 1598, 10227, 3918, 5590, 7748, 941, 2385, 2328, 5519, 81, 5641, 9317, 3478, 9942, 9407, 4037, 7012, 5960, 10091, 6995, 2356, 6029, 5999, 8734]';
-  h2p: string = '[7097, 6773, 2029, 9938, 2169, 4805, 6345, 948, 9193, 5988, 202, 5555, 865, 1977, 568, 11599, 6973, 10761, 7680, 2861, 7919, 8672, 7051, 7425, 10433, 4668, 8175, 10603, 10410, 4690, 3033, 2636, 8042, 12015, 6009, 4549, 173, 8667, 1875, 156, 848, 3745, 11269, 231, 7578, 2375, 1286, 3689, 10186, 8292, 3092, 11204, 3006, 9695, 7182, 8603, 6188, 11527, 3555, 1295, 3802, 9219, 6600, 10881, 9950, 10277, 463, 10400, 3871, 473, 1000, 9965, 10615, 2354, 2048, 3066, 8278, 3016, 8144, 4655, 1398, 1953, 1638, 10878, 10462, 9932, 7218, 1452, 10107, 4095, 2829, 5903, 4895, 11024, 8861, 3372, 5119, 7260, 11859, 4949, 11965, 6286, 12191, 4416, 8362, 4763, 7246, 1896, 11329, 2166, 2182, 2777, 6240, 2065, 11837, 9117, 1998, 1954, 10823, 7539, 4165, 5976, 2331, 9050, 1714, 10044, 7184, 9493, 7514, 6321, 7715, 209, 11403, 6396, 10504, 7766, 6609, 1754, 4686, 3517, 2519, 6269, 2117, 647, 1791, 4389, 5414, 6258, 9665, 5421, 10949, 8725, 5586, 3695, 2288, 12133, 4287, 7753, 11762, 10829, 4578, 7968, 4177, 875, 4351, 899, 4121, 8827, 9634, 8566, 4776, 10053, 1678, 4850, 5839, 11804, 1429, 5842, 9407, 2355, 9055, 9780, 6188, 10818, 7398, 8623, 1626, 9219, 11419, 4720, 5302, 10906, 4294, 7287, 8120, 6814, 4825, 13, 4824, 12146, 4728, 2755, 5333, 951, 258, 1299, 11123, 8529, 6909, 7548, 6879, 1184, 9542, 6938, 8621, 3545, 11847, 8514, 9489, 12116, 11045, 2759, 7729, 9820, 3537, 11270, 3429, 9697, 1525, 1867, 3370, 11501, 7587, 2158, 12125, 3077, 10975, 898, 6637, 4994, 271, 10624, 4652, 9514, 1828, 6943, 2966, 7558, 515, 314, 530, 7915, 11925, 6045, 11928, 7416, 4295, 2440, 10272, 1109, 1838, 10631, 6964, 3945, 11955, 11158, 5461, 11634, 2185, 8827, 10647, 11397, 9685, 3644, 6573, 8887, 7600, 7579, 960, 2332, 11116, 2420, 1366, 9681, 8075, 10764, 4287, 4086, 1931, 3380, 9278, 1600, 2672, 10950, 9904, 6628, 6946, 3900, 10364, 6360, 8012, 1213, 2567, 6313, 1579, 8069, 10539, 11736, 8421, 6184, 7586, 10471, 8073, 4488, 786, 3994, 8217, 7350, 12070, 5897, 8757, 5962, 4193, 2024, 3703, 11362, 12280, 1051, 4839, 9111, 3901, 5032, 12097, 559, 3907, 10977, 5394, 2998, 3734, 11077, 4968, 10246, 7626, 1611, 9565, 1570, 5133, 7270, 2444, 11244, 9477, 1457, 1508, 2130, 3189, 7380, 2294, 3204, 2119, 10123, 8787, 5396, 6254, 11522, 118, 11679, 10997, 11739, 3618, 7189, 1554, 6282, 8306, 4882, 4223, 10593, 7479, 4653, 1604, 5101, 8895, 8945, 724, 7010, 10155, 11553, 7920, 5056, 4242, 11138, 154, 4307, 11652, 7121, 11551, 9689, 114, 6478, 3986, 4143, 345, 473, 9672, 9904, 356, 10014, 5358, 630, 11111, 7425, 8786, 3381, 8212, 1259, 9626, 3055, 12016, 10122, 7753, 7768, 12267, 11093, 2970, 9179, 5515, 4203, 8564, 3448, 11678, 12023, 4008, 3577, 10603, 6650, 5015, 2405, 6889, 1881, 1770, 1250, 3193, 228, 9692, 10065, 2234, 8002, 586, 11868, 6053, 972, 7790, 2703, 11966, 7016, 10212, 12030, 11676, 10124, 3509, 6154, 5387, 2253, 4798, 11519, 482, 10370, 6460, 7100, 1332, 12192, 5259, 7197, 12181, 4000, 11604, 7400, 10968, 7850, 10595, 2863, 4222, 11987, 451, 11837, 12220, 766, 11224, 4594, 8340, 5530, 11558, 1996, 4810, 2816, 6664, 1135, 779, 10116, 3820, 617, 7209, 3247, 6220, 9509, 3672, 11986, 565, 11469, 6964, 172, 2972, 1865]';
+export class FalconSignatureComponent implements OnInit {
+  // User inputs for generation
+  seedInput: string = 'my-secret-seed-12345';
+  messageInput: string = 'Hello, Falcon-512! This is a test message.';
+  
+  // Generated artifacts
+  generatedSignature: string | null = null;
+  generatedPublicKey: string | null = null;
+  generatedNonce: string | null = null;
+  
+  // Hashes
+  pkHash: string | null = null;
+  
+  // Toggle details
+  showDetails = false;
+
+  // Form inputs (auto-filled)
+  s1: string = '';
+  h: string = '';
+  h2p: string = '';
   in_tx_hash1: string = '340282366920938463463374607431768211455';
   in_tx_hash2: string = '340282366920938463463374607431768211455';
 
   loading = false;
+  generating = false;
   error: string | null = null;
+  statusMessage: string = 'Initializing Falcon...';
 
   constructor(
     private falconService: FalconCircuitInputsService,
+    private falconWasm: FalconWasmService,
     private router: Router
   ) {}
+
+  async ngOnInit() {
+    try {
+      await this.falconWasm.waitForReady();
+      this.statusMessage = '✅ Falcon-512 Ready';
+    } catch (e) {
+      this.statusMessage = '❌ Failed to initialize Falcon';
+      this.error = 'Could not load Falcon WASM module.';
+    }
+  }
+
+  async generateSignature() {
+    try {
+      this.generating = true;
+      this.error = null;
+      this.statusMessage = 'Generating keys and signature...';
+
+      // 1. Convert seed to 48 bytes
+      const seed = await this.stringToSeed(this.seedInput);
+
+      // 2. Generate Keypair
+      const keypair = this.falconWasm.createKeypairFromSeed(seed);
+      this.generatedPublicKey = this.toBase64(keypair.publicKey);
+
+      // 3. Sign Message
+      const msgBytes = new TextEncoder().encode(this.messageInput);
+      // Deterministic RNG seed (all zeros)
+      const rngSeed = new Uint8Array(48); 
+      const signature = this.falconWasm.signMessage(msgBytes, keypair.privateKey, rngSeed);
+      this.generatedSignature = this.toBase64(signature);
+      
+      // 4. Extract details
+      const pubKeyCoeffs = this.falconWasm.getPublicKeyCoefficients(keypair.publicKey);
+      const sigCoeffs = this.falconWasm.getSignatureCoefficients(signature);
+      
+      // Extract nonce (bytes 1-40)
+      const nonce = signature.slice(1, 41);
+      this.generatedNonce = this.toBase64(nonce);
+
+      // 5. Hash to point (nonce + message)
+      const nonceAndMsg = new Uint8Array(nonce.length + msgBytes.length);
+      nonceAndMsg.set(nonce);
+      nonceAndMsg.set(msgBytes, nonce.length);
+      const h2pCoeffs = this.falconWasm.hashToPoint(nonceAndMsg);
+
+      // 6. Populate Form inputs immediately so they are ready for generateCircuitInputs
+      this.s1 = JSON.stringify(sigCoeffs.s1); // Using s1 (second component) as signature poly as per demo usage?
+      // Wait, let's check demo again.
+      // Demo output: s0 coefficients (512 elements), s1 coefficients (512 elements).
+      // The circuit input usually takes 's1' (the vector s is (s1, s2) in Falcon paper, but specific implementation might vary).
+      // My service expects 's1'.
+      // In the previous turn, I mapped C-s2 to service-s1.
+      // Let's look at `FalconCircuitInputsService` -> `generateCircuitInputs`:
+      // It takes `s1`, `h`, `h2p`.
+      // It does: `const s1_ntt = this.ntt(s1); const product = s1_ntt * h_hat;`
+      // The verification equation is s1 + s2 * h = c (mod q).
+      // So `s1_ntt * h_hat` corresponds to `s2 * h`.
+      // So the input `s1` to the service MUST BE the component multiplied by `h`.
+      // In Falcon paper s1 + s2 * h = c.
+      // So the input `s1` to `generateCircuitInputs` is `s2`.
+      // `getSignatureCoefficients` returns {s0, s1}.
+      // s0 corresponds to s1 in paper? s1 corresponds to s2 in paper?
+      // In Falcon reference implementation:
+      // sig = (r, s). r is nonce. s is compressed vector.
+      // Expanded s is (s1, s2).
+      // Verification: s1 + s2 * h = c.
+      // We need to pass `s2` (multiplied by h) to the service as `s1`.
+      // Let's assume `sigCoeffs.s1` is `s2` from the paper.
+      
+      this.s1 = JSON.stringify(sigCoeffs.s1);
+      this.h = JSON.stringify(pubKeyCoeffs);
+      this.h2p = JSON.stringify(h2pCoeffs);
+
+      // 7. Get Hash using the service (this ensures we get the exact same hash as the circuit uses)
+      // We call generateCircuitInputs just to get the hash, even if we don't navigate yet.
+      // This handles NTT transform and Poseidon hashing correctly.
+      const inputs = await this.falconService.generateCircuitInputs(
+        sigCoeffs.s1,
+        pubKeyCoeffs,
+        h2pCoeffs,
+        this.in_tx_hash1,
+        this.in_tx_hash2
+      );
+      
+      this.pkHash = inputs.pk_hash_in;
+
+      this.statusMessage = '✅ Generated successfully!';
+      this.showDetails = true;
+
+    } catch (e: any) {
+      console.error(e);
+      this.error = e.message || 'Generation failed';
+      this.statusMessage = '❌ Error';
+    } finally {
+      this.generating = false;
+    }
+  }
+
+  randomizeSeed() {
+    const randomWords = ['quantum', 'falcon', 'crypto', 'secure', 'lattice', 'nist', 'pqc', 'wasm'];
+    const random = randomWords[Math.floor(Math.random() * randomWords.length)];
+    this.seedInput = random + '-' + Date.now() + '-' + Math.floor(Math.random() * 10000);
+  }
+
+  async stringToSeed(str: string): Promise<Uint8Array> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    
+    if (crypto && crypto.subtle) {
+        try {
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hash = new Uint8Array(hashBuffer);
+            const seed = new Uint8Array(48);
+            for (let i = 0; i < 48; i++) {
+                seed[i] = hash[i % 32];
+            }
+            return seed;
+        } catch (e) {
+            console.warn('Web Crypto API not available');
+        }
+    }
+    
+    // Fallback
+    const seed = new Uint8Array(48);
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) {
+        hash = ((hash << 5) - hash) + data[i];
+        hash = hash & hash; 
+    }
+    for (let i = 0; i < 48; i++) {
+        hash = (hash * 1664525 + 1013904223) & 0xFFFFFFFF; 
+        seed[i] = (hash >>> 24) & 0xFF;
+    }
+    return seed;
+  }
+
+  toBase64(bytes: Uint8Array): string {
+    let binary = '';
+    const len = bytes.byteLength;
+    for (let i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
 
   async generateAndNavigate() {
     try {
       this.loading = true;
       this.error = null;
-
-      console.log('Parsing simplified Falcon inputs...');
 
       // Parse inputs
       const s1Array = JSON.parse(this.s1) as number[];
@@ -40,19 +201,10 @@ export class FalconSignatureComponent {
       const h2pArray = JSON.parse(this.h2p) as number[];
 
       // Validate array lengths
-      if (s1Array.length !== 512) {
-        throw new Error(`s1 must have 512 coefficients, got ${s1Array.length}`);
-      }
-      if (hArray.length !== 512) {
-        throw new Error(`h must have 512 coefficients, got ${hArray.length}`);
-      }
-      if (h2pArray.length !== 512) {
-        throw new Error(`h2p must have 512 coefficients, got ${h2pArray.length}`);
-      }
+      if (s1Array.length !== 512) throw new Error(`s1 must have 512 coefficients`);
+      if (hArray.length !== 512) throw new Error(`h must have 512 coefficients`);
+      if (h2pArray.length !== 512) throw new Error(`h2p must have 512 coefficients`);
 
-      console.log('Generating full circuit inputs from simplified Falcon signature...');
-
-      // Generate full circuit inputs using the service
       const circuitInput = await this.falconService.generateCircuitInputs(
         s1Array,
         hArray,
@@ -61,17 +213,7 @@ export class FalconSignatureComponent {
         this.in_tx_hash2
       );
 
-      console.log('Circuit inputs generated successfully:', {
-        s1_length: circuitInput.s1.length,
-        h_hat_length: circuitInput.h_hat.length,
-        h_product_inv_length: circuitInput.h_product_inv.length,
-        h2p_d_length: circuitInput.h2p_d.length
-      });
-
-      // Store the generated inputs in session storage for the proof-generation component
       sessionStorage.setItem('prefilled_circuit_input', JSON.stringify(circuitInput));
-
-      // Navigate to proof generation page
       this.router.navigate(['/generate']);
 
     } catch (err: any) {
@@ -82,28 +224,17 @@ export class FalconSignatureComponent {
     }
   }
 
-  loadExampleFromFile() {
-    // You can add example loading here if needed
-    this.error = 'Example loading not yet implemented';
-  }
-
   isFormValid(): boolean {
     try {
       if (!this.in_tx_hash1 || !this.in_tx_hash2) return false;
-      
       const s1Array = JSON.parse(this.s1);
       const hArray = JSON.parse(this.h);
       const h2pArray = JSON.parse(this.h2p);
-      
-      return Array.isArray(s1Array) && 
-             Array.isArray(hArray) && 
-             Array.isArray(h2pArray) &&
-             s1Array.length === 512 &&
-             hArray.length === 512 &&
-             h2pArray.length === 512;
+      return Array.isArray(s1Array) && s1Array.length === 512 &&
+             Array.isArray(hArray) && hArray.length === 512 &&
+             Array.isArray(h2pArray) && h2pArray.length === 512;
     } catch {
       return false;
     }
   }
 }
-
