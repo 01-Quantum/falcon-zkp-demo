@@ -263,4 +263,13 @@ export class FalconSignatureComponent implements OnInit {
       return false;
     }
   }
+
+  copyToClipboard(text: string | null) {
+    if (!text) return;
+    navigator.clipboard.writeText(text).then(() => {
+      // Optional: Show a toast or visual feedback
+    }).catch(err => {
+      console.error('Could not copy text: ', err);
+    });
+  }
 }

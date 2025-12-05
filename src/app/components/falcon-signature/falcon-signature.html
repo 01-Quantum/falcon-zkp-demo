@@ -37,19 +37,31 @@
     
     <div class="result-grid">
       <div class="result-item">
-        <label>Message SHA256 (Hex)</label>
+        <div class="label-row">
+          <label>Message SHA256 (Hex)</label>
+          <button type="button" class="btn-copy-inline" (click)="copyToClipboard(messageHashHex)" title="Copy to clipboard">📋</button>
+        </div>
         <div class="value-box code-font">{{ messageHashHex }}</div>
       </div>
       <div class="result-item">
-        <label>Signature (Base64)</label>
+        <div class="label-row">
+          <label>Signature (Base64)</label>
+          <button type="button" class="btn-copy-inline" (click)="copyToClipboard(generatedSignature)" title="Copy to clipboard">📋</button>
+        </div>
         <div class="value-box code-font">{{ generatedSignature | slice:0:50 }}...</div>
       </div>
       <div class="result-item">
-        <label>Public Key (Base64)</label>
+        <div class="label-row">
+          <label>Public Key (Base64)</label>
+          <button type="button" class="btn-copy-inline" (click)="copyToClipboard(generatedPublicKey)" title="Copy to clipboard">📋</button>
+        </div>
         <div class="value-box code-font">{{ generatedPublicKey | slice:0:50 }}...</div>
       </div>
       <div class="result-item highlight">
-        <label>Poseidon Hash of Public Key (Circuit Input)</label>
+        <div class="label-row">
+          <label>Poseidon Hash of Public Key (Circuit Input)</label>
+          <button type="button" class="btn-copy-inline" (click)="copyToClipboard(pkHash)" title="Copy to clipboard">📋</button>
+        </div>
         <div class="value-box code-font">{{ pkHash }}</div>
       </div>
     </div>
@@ -60,6 +72,21 @@
   </div>
 
   <hr class="divider" *ngIf="generatedSignature">
+
+  <div class="button-group center" *ngIf="generatedSignature" style="margin-bottom: 20px;">
+    <button 
+      type="button" 
+      class="btn btn-success"
+      (click)="generateAndNavigate()"
+      [disabled]="loading || !isFormValid()"
+    >
+      {{ loading ? '⏳ Processing...' : '⚡ Generate ZK Proof' }}
+    </button>
+  </div>
+
+  <div class="error-message" *ngIf="error">
+    <strong>❌ Error:</strong> {{ error }}
+  </div>
 
   <!-- Form Section (Prefilled) -->
   <form (ngSubmit)="generateAndNavigate()" #signatureForm="ngForm" [style.display]="showDetails ? 'block' : 'none'">
@@ -126,18 +153,5 @@
       </div>
     </div>
 
-    <div class="error-message" *ngIf="error">
-      <strong>❌ Error:</strong> {{ error }}
-    </div>
-
-    <div class="button-group">
-      <button 
-        type="submit" 
-        class="btn btn-success"
-        [disabled]="loading || !isFormValid()"
-      >
-        {{ loading ? '⏳ Processing...' : '⚡ Generate ZK Proof' }}
-      </button>
-    </div>
   </form>
 </div>

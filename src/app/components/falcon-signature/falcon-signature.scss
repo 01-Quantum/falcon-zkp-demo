@@ -1,10 +1,6 @@
 /* Component specific styles can remain here, or general ones can be moved to app.scss */
 /* Since we moved the container structure to app.html, we just need component specific content styles here */
 
-.falcon-signature-container {
-  /* No longer strictly needed for layout as parent handles it, but good for specificity */
-}
-
 .info-box {
   background: #e3f2fd;
   border-left: 4px solid #2196f3;
@@ -166,6 +162,17 @@
       font-family: 'Courier New', monospace;
     }
   }
+
+  .label-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 5px;
+    
+    label {
+      margin-bottom: 0;
+    }
+  }
   
   &.highlight {
     .value-box {
@@ -273,3 +280,4 @@
     text-decoration: underline;
   }
 }
+
