@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FalconCircuitInputsService } from '../../services/falcon-circuit-inputs.service';
 import { FalconWasmService } from '../../services/falcon-wasm.service';
+import { BlockchainService } from '../../services/blockchain.service';
 
 @Component({
   selector: 'app-falcon-signature',
@@ -13,6 +14,9 @@ import { FalconWasmService } from '../../services/falcon-wasm.service';
   styleUrls: ['./falcon-signature.scss']
 })
 export class FalconSignatureComponent implements OnInit {
+  // Expose wallet state observable
+  walletAddress$;
+
   // User inputs for generation
   seedInput: string = 'my-secret-seed-12345';
   messageInput: string = 'Hello, Falcon-512! This is a test message.';
@@ -44,8 +48,11 @@ export class FalconSignatureComponent implements OnInit {
   constructor(
     private falconService: FalconCircuitInputsService,
     private falconWasm: FalconWasmService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private blockchainService: BlockchainService
+  ) {
+    this.walletAddress$ = this.blockchainService.walletAddress$;
+  }
 
   async ngOnInit() {
     try {
@@ -276,5 +283,13 @@ export class FalconSignatureComponent implements OnInit {
     }).catch(err => {
       console.error('Could not copy text: ', err);
     });
+  }
+
+  lockAccount() {
+    if (this.pkHash) {
+      this.blockchainService.lockAccount(this.pkHash);
+    } else {
+      alert('No Public Key Hash generated yet.');
+    }
   }
 }

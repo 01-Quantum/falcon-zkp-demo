@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
-})
+})  
 export class BlockchainService {
   // Contract & Network Constants
   readonly CONTRACT_ADDRESS = '0x586D3394b2c21C400927F0BD4038dA474ca35efb';
@@ -13,7 +13,16 @@ export class BlockchainService {
   readonly EXPLORER_URL = 'https://testnet.purrsec.com'; 
   readonly NETWORK_NAME = 'Hyperliquid EVM Testnet';
 
-  // State Management
+    // Contract Interface
+    readonly ABI = [
+      "function lock(bytes32 falconPubHash) external",
+      "function unlock(bytes32 falconPubHash, bytes32 txHash, uint256[2] _pA, uint256[2][2] _pB, uint256[2] _pC) external",
+      "function isAuthorized(address account) external view returns (bool)",
+      "function falconLocks(address account) external view returns (bytes32)",
+      "function dbg_enforce_unlock(address target) external",
+    ];
+
+    // State Management
   private walletAddressSubject = new BehaviorSubject<string | null>(null);
   walletAddress$ = this.walletAddressSubject.asObservable();
 
@@ -138,6 +147,78 @@ export class BlockchainService {
     } finally {
         this.checkingAuthSubject.next(false);
     }
+  }
+
+  private async sendTransaction(data: string, successMessage: string) {
+    const address = this.walletAddressSubject.value;
+    if (!address) {
+        alert('Please connect your wallet first');
+        return;
+    }
+
+    try {
+        const ethereum = (window as any).ethereum;
+
+        // Ensure we are on the correct network before sending transaction
+        const currentChainId = await ethereum.request({ method: 'eth_chainId' });
+        if (currentChainId !== this.CHAIN_ID_HEX) {
+            await this.switchNetwork(ethereum);
+        }
+
+        console.log('Sending Transaction:');
+        console.log('  To:', this.CONTRACT_ADDRESS);
+        console.log('  From:', address);
+        console.log('  Data:', data);
+
+        const txHash = await ethereum.request({
+            method: 'eth_sendTransaction',
+            params: [{
+                to: this.CONTRACT_ADDRESS,
+                from: address,
+                data: data,
+            }]
+        });
+
+        console.log('Transaction sent:', txHash);
+        alert(`${successMessage} Hash: ${txHash}`);
+        
+    } catch (error: any) {
+        console.error('Error sending transaction:', error);
+        alert('Transaction failed: ' + (error.message || 'Unknown error'));
+    }
+  }
+
+  async lockAccount(falconPubHash: string) {
+    // Function signature for lock(bytes32)
+    // keccak256("lock(bytes32)") = 0x01670ba9
+    const functionSelector = '0x01670ba9'; 
+    
+    // falconPubHash is a decimal string from the circuit output (field element)
+    // Convert to 32-byte hex string
+    const pubHashBigInt = BigInt(falconPubHash);
+
+    if (pubHashBigInt === 0n) {
+        alert('Error: Public Key Hash is 0. Cannot lock account with invalid hash.');
+        return;
+    }
+
+    const pubHashHex = pubHashBigInt.toString(16).padStart(64, '0');
+    const data = functionSelector + pubHashHex;
+    
+    await this.sendTransaction(data, 'Lock transaction sent!');
+  }
+
+  async enforceUnlock(targetAddress: string) {
+    // Function signature for dbg_enforce_unlock(address)
+    // keccak256("dbg_enforce_unlock(address)") = 0x01d561a8
+    const functionSelector = '0x01d561a8'; 
+    
+    const addrClean = targetAddress.toLowerCase().replace("0x", "");
+    const paddedAddress = addrClean.padStart(64, '0');
+    
+    const data = functionSelector + paddedAddress;
+
+    await this.sendTransaction(data, 'Unlock transaction sent!');
   }
 
   formatAddress(address: string): string {

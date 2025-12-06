@@ -61,6 +61,14 @@
         <div class="label-row">
           <label>Poseidon Hash of Public Key (Circuit Input)</label>
           <button type="button" class="btn-copy-inline" (click)="copyToClipboard(pkHash)" title="Copy to clipboard">📋</button>
+          <button 
+            *ngIf="walletAddress$ | async"
+            type="button" 
+            class="btn-lock" 
+            (click)="lockAccount()" 
+            title="Lock Account on Blockchain" 
+            style="margin-left: auto; background: none; border: none; cursor: pointer; font-size: 1.2rem;"
+          >🔒</button>
         </div>
         <div class="value-box code-font">{{ pkHash }}</div>
       </div>

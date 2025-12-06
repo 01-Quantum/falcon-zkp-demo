@@ -33,6 +33,8 @@
             </span>
           </span>
           <button class="btn-refresh" (click)="checkAuthorization()" title="Refresh Status" [disabled]="checkingAuth$ | async">🔄</button>
+          
+          <button *ngIf="(isAuthorized$ | async) === false" class="nav-btn" (click)="enforceUnlock()" style="background: #ff4444; margin-left: 10px; border: none;">Enforce Unlock (DBG)</button>
         </div>
       </div>
     </div>
