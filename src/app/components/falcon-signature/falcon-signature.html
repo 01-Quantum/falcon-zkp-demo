@@ -90,6 +90,16 @@
     >
       {{ loading ? '⏳ Processing...' : '⚡ Generate ZK Proof' }}
     </button>
+    <button
+      *ngIf="walletAddress$ | async"
+      type="button"
+      class="btn btn-primary"
+      (click)="lockAccount()"
+      [disabled]="!pkHash"
+      style="margin-left: 15px; background-color: #1f4068; border-color: #1f4068;"
+    >
+      🔒 Lock the Account
+    </button>
   </div>
 
   <div class="error-message" *ngIf="error">
