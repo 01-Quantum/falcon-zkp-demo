@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ZkpService } from '../../services/zkp';
+import { BlockchainService } from '../../services/blockchain.service';
 
 @Component({
   selector: 'app-proof-verification',
@@ -28,7 +29,8 @@ export class ProofVerificationComponent implements OnInit {
 
   constructor(
     private zkpService: ZkpService,
-    private router: Router
+    private router: Router,
+    private blockchainService: BlockchainService
   ) {}
 
   ngOnInit() {
@@ -121,5 +123,35 @@ export class ProofVerificationComponent implements OnInit {
     navigator.clipboard.writeText(text).then(() => {
       alert(`${type} copied to clipboard!`);
     });
+  }
+
+  async unlockAccount() {
+    if (!this.proof || !this.publicSignals || this.publicSignals.length < 3) {
+        alert('Please verify a valid proof first.');
+        return;
+    }
+
+    try {
+        const falconPubHash = this.publicSignals[0];
+        const txHashLow = this.publicSignals[1];
+        const txHashHigh = this.publicSignals[2];
+        
+        const pi_a = this.proof.pi_a;
+        const pi_b = this.proof.pi_b;
+        const pi_c = this.proof.pi_c;
+
+        await this.blockchainService.unlockAccount(
+            falconPubHash, 
+            txHashLow, 
+            txHashHigh, 
+            pi_a, 
+            pi_b, 
+            pi_c
+        );
+
+    } catch (e: any) {
+        console.error(e);
+        alert('Failed to send unlock transaction: ' + e.message);
+    }
   }
 }

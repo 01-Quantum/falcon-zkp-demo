@@ -57,6 +57,15 @@
           <span *ngIf="!loading">🔍 Verify Proof Now</span>
           <span *ngIf="loading">⏳ Verifying...</span>
         </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="unlockAccount()"
+          [disabled]="loading"
+          style="margin-left: 15px;"
+        >
+          🔓 Unlock Account
+        </button>
       </div>
     </div>
   </div>
@@ -102,6 +111,15 @@
       >
         <span *ngIf="!loading">🔍 Verify Proof Now</span>
         <span *ngIf="loading">⏳ Verifying...</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="unlockAccount()"
+        [disabled]="loading"
+        style="margin-left: 15px;"
+      >
+        🔓 Unlock Account
       </button>
     </div>
   </div>

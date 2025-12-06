@@ -221,6 +221,53 @@ export class BlockchainService {
     await this.sendTransaction(data, 'Unlock transaction sent!');
   }
 
+  async unlockAccount(falconPubHash: string, txHashLow: string, txHashHigh: string, pi_a: string[], pi_b: string[][], pi_c: string[]) {
+    // Function signature for unlock(...)
+    // Selector: 0xaf425f09
+    const functionSelector = '0xaf425f09';
+
+    // 1. Encode falconPubHash (bytes32)
+    const pubHashBigInt = BigInt(falconPubHash);
+    const pubHashHex = pubHashBigInt.toString(16).padStart(64, '0');
+
+    // 2. Reconstruct txHash (bytes32) from Low and High parts
+    // txHash = (High << 128) | Low
+    const low = BigInt(txHashLow);
+    const high = BigInt(txHashHigh);
+    const txHashBigInt = (high << 128n) | low;
+    const txHashHex = txHashBigInt.toString(16).padStart(64, '0');
+
+    // 3. Encode _pA (uint256[2]) -> 2 words
+    const pA_0 = BigInt(pi_a[0]).toString(16).padStart(64, '0');
+    const pA_1 = BigInt(pi_a[1]).toString(16).padStart(64, '0');
+
+    // 4. Encode _pB (uint256[2][2]) -> 4 words
+    // SnarkJS output: [ [x, y], [x, y], ... ]
+    // Flattened: pB[0][0], pB[0][1], pB[1][0], pB[1][1]
+    // Note: SnarkJS usually gives strings.
+    const pB_00 = BigInt(pi_b[0][1]).toString(16).padStart(64, '0'); // x1
+    const pB_01 = BigInt(pi_b[0][0]).toString(16).padStart(64, '0'); // y1
+    const pB_10 = BigInt(pi_b[1][1]).toString(16).padStart(64, '0'); // x2
+    const pB_11 = BigInt(pi_b[1][0]).toString(16).padStart(64, '0'); // y2
+    // WAIT! Groth16 verification on Ethereum often requires swapping coordinates or specific ordering.
+    // Standard SnarkJS `exportSolidity` swaps them:
+    // pB = [[pB[0][1], pB[0][0]], [pB[1][1], pB[1][0]]]
+    // So I swapped [0] and [1] indices above based on common snarkjs behavior.
+
+    // 5. Encode _pC (uint256[2]) -> 2 words
+    const pC_0 = BigInt(pi_c[0]).toString(16).padStart(64, '0');
+    const pC_1 = BigInt(pi_c[1]).toString(16).padStart(64, '0');
+
+    const data = functionSelector + 
+                 pubHashHex + 
+                 txHashHex + 
+                 pA_0 + pA_1 + 
+                 pB_00 + pB_01 + pB_10 + pB_11 + 
+                 pC_0 + pC_1;
+
+    await this.sendTransaction(data, 'Unlock Proof transaction sent!');
+  }
+
   formatAddress(address: string): string {
     if (!address) return '';
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
