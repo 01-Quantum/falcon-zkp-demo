@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "build:ghpages": "ng build --base-href=/falcon-zkp-demo/",
-    "deploy": "npm run build:ghpages && npx gh-pages -d dist/zkp-demo/browser -r https://github.com/01-Quantum/falcon-zkp-demo.git"
+    "deploy": "npm run build:ghpages && npx gh-pages -d dist/zkp-demo/browser"
   },
   "prettier": {
     "printWidth": 100,

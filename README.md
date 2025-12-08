@@ -5,7 +5,7 @@ A modern Angular application for generating and verifying Zero-Knowledge Proofs 
 [Live Demo](https://01-quantum.github.io/falcon-zkp-demo)
 
 ## Generate a new Falcon-512 Signature and Crypto material 
-[👉 01-quantum.github.io/falcon-qone-wasm/](https://01-quantum.github.io/falcon-qone-wasm/)
+[👉 01-quantum.github.io/falcon-qone-wasm/](https://01-quantum.github.io/falcon-zkp-demo/)
 
 ## 🚀 Features
 
