@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 })  
 export class BlockchainService {
   // Contract & Network Constants
-  readonly CONTRACT_ADDRESS = '0x586D3394b2c21C400927F0BD4038dA474ca35efb';
+  readonly CONTRACT_ADDRESS = '0x83478750A5A4D77c8488Dc0A85B3c2209ff591D7';
   readonly CHAIN_ID_HEX = '0x3E6'; // 998
   readonly CHAIN_ID_DECIMAL = 998;
   readonly RPC_URL = 'https://rpc.hyperliquid-testnet.xyz/evm';
