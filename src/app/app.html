@@ -1,51 +1,56 @@
 <div class="app-container">
   <div class="app-header">
-    <div class="branding-row">
+    <div class="header-content">
+      <!-- Left: Branding -->
       <div class="branding">
-        <img src="assets/01com.png" alt="01com Logo" class="logo">
-        <div class="company-info">
-          <span class="company-name">01 Quantum</span>
-          <span class="separator">|</span>
-          <span class="company-tagline">Post-Quantum Cyber Security</span>
-        </div>
+        <span class="brand-text">qONE</span>
       </div>
-      
-      <div class="nav-links">
-        <a routerLink="/falcon-signature" routerLinkActive="active" class="nav-btn">
-          <span>📝 Falcon Signature</span>
-        </a>
-        <a routerLink="/generate" routerLinkActive="active" class="nav-btn">
-          <span>🔐 Generate Proof</span>
-        </a>
-        <a routerLink="/verify" routerLinkActive="active" class="nav-btn">
-          <span>✓ Verify Proof</span>
-        </a>
-        <button class="nav-btn wallet-btn" (click)="connectWallet()" [disabled]="isConnecting$ | async">
-          <span *ngIf="!(walletAddress$ | async)">🦊 Connect Wallet</span>
-          <span *ngIf="walletAddress$ | async">🟢 {{ formatAddress(walletAddress$ | async) }} ❌</span>
-        </button>
 
-        <div class="auth-status" *ngIf="walletAddress$ | async">
-          <span class="status-badge" [class.unlocked]="isAuthorized$ | async" [class.locked]="!(isAuthorized$ | async) && (isAuthorized$ | async) !== null" [class.unknown]="(isAuthorized$ | async) === null">
-            <span *ngIf="checkingAuth$ | async">🔄 Checking...</span>
-            <span *ngIf="!(checkingAuth$ | async)">
-              {{ (isAuthorized$ | async) === null ? '❓ Unknown' : ((isAuthorized$ | async) ? '🔓 Unlocked' : '🔒 Locked') }}
-            </span>
-          </span>
-          <button class="btn-refresh" (click)="checkAuthorization()" title="Refresh Status" [disabled]="checkingAuth$ | async">🔄</button>
-          
-          <button *ngIf="(isAuthorized$ | async) === false" class="nav-btn" (click)="enforceUnlock()" style="background: #ff4444; margin-left: 10px; border: none;">Enforce Unlock (DBG)</button>
+      <!-- Right: Actions & Nav -->
+      <div class="header-actions">
+        <!-- Navigation Buttons -->
+         <nav class="main-nav">
+           <a routerLink="/falcon-signature" routerLinkActive="active" class="nav-btn">Falcon Signature</a>
+           <a routerLink="/generate" routerLinkActive="active" class="nav-btn">Generate Proof</a>
+           <a routerLink="/verify" routerLinkActive="active" class="nav-btn">Verify Proof</a>
+         </nav>
+        
+        <!-- Wallet Connection -->
+        <div class="wallet-section">
+          <button class="btn-wallet" (click)="connectWallet()" [disabled]="(isConnecting$ | async)">
+            <ng-container *ngIf="!(walletAddress$ | async)">
+              Connect Wallet
+            </ng-container>
+            <ng-container *ngIf="walletAddress$ | async">
+              <span class="status-indicator"></span>
+              {{ formatAddress(walletAddress$ | async) }}
+            </ng-container>
+          </button>
+
+          <!-- Auth Status / Disconnect (Simplified from original) -->
+          <button *ngIf="walletAddress$ | async" class="btn-disconnect" (click)="connectWallet()">
+             Disconnect
+          </button>
+        </div>
+        
+        <div class="extra-actions">
+           <a href="#" class="btn-litepaper">LITEPAPER</a>
+           <a href="#" class="btn-qlabs">$qLABS</a>
         </div>
       </div>
     </div>
-    
-    <!-- This area can be for page-specific titles, currently global for demo -->
-    <!-- We can make this dynamic later if needed, for now hardcoded as it seems intended for the whole demo wrapper -->
-    <h1>🔐 Falcon-512 ZKP Binder</h1>
-    <p class="subtitle">Explore post-quantum signatures with full coefficient visibility</p>
   </div>
 
-  <div class="app-content">
-    <router-outlet></router-outlet>
+  <!-- Main Content Area -->
+  <div class="app-content-wrapper">
+    <!-- Decorative element for the corner matching design -->
+    <div class="corner-marker top-left"></div>
+    <div class="corner-marker top-right"></div>
+    <div class="corner-marker bottom-left"></div>
+    <div class="corner-marker bottom-right"></div>
+    
+    <div class="app-content">
+      <router-outlet></router-outlet>
+    </div>
   </div>
 </div>

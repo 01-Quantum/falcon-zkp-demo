@@ -1,37 +1,176 @@
 /* Global Styles */
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('assets/fonts/NeueMachina-Regular.woff2') format('woff2'),
+    url('assets/fonts/NeueMachina-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('assets/fonts/NeueMachina-Ultrabold.woff2') format('woff2'),
+    url('assets/fonts/NeueMachina-Ultrabold.woff') format('woff');
+  font-weight: 800;
+  font-style: normal;
+}
+
+:root {
+  --color-neon: #a2ff00;
+  /* Adjusted to a bright neon green/lime */
+  --color-neon-hover: #b4ff33;
+  --color-bg-dark: #000000;
+  --color-bg-panel: #0a0a0a;
+  --color-text-main: #ffffff;
+  --color-text-muted: #888888;
+  --color-border: #333333;
+  --font-display: 'Neue Machina', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Courier New', monospace;
+  --spacing-unit: 1rem;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html,
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-bg-dark);
+  background-image: url("assets/coins.png");
+  /* Keeping user request */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #001a33; /* Deep dark blue background */
-  color: #333;
-  min-height: 100vh;
-  padding: 2rem 0;
+  color: var(--color-text-main);
 }
 
+/* Typography Overrides */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1rem;
+}
+
+/* Global Button Styles to match Design */
+button:not(.mat-icon-button),
+.btn {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  border-radius: 4px;
+  /* Slightly sharper corners */
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+
+  /* Default Primary Action Look */
+  background-color: var(--color-neon);
+  color: black;
+
+  &:hover {
+    background-color: var(--color-neon-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 0 15px rgba(162, 255, 0, 0.4);
+  }
+
+  &:disabled {
+    background-color: #333;
+    color: #666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+/* Secondary / Outline Button Style */
+.btn-secondary,
+button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-text-main);
+    box-shadow: none;
+    color: white;
+  }
+}
+
+/* Form Inputs */
+input,
+textarea,
+select {
+  width: 100%;
+  max-width: 100%;
+  background-color: #111;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-main);
+  padding: 12px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-neon);
+    box-shadow: 0 0 0 1px var(--color-neon);
+  }
+
+  &::placeholder {
+    color: #555;
+  }
+
+  &:disabled {
+    background-color: #050505;
+    border-color: #222;
+    color: #444;
+  }
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Code Logic from previous step */
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--font-mono);
 }
 
-/* Scrollbar styling */
+/* Scrollbar styling - Dark Theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #000;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #333;
   border-radius: 4px;
 }
 
@@ -45,6 +184,7 @@ code {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
