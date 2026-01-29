@@ -9,12 +9,9 @@
       <!-- Right: Actions & Nav -->
       <div class="header-actions">
         <!-- Navigation Buttons -->
-         <nav class="main-nav">
-           <a routerLink="/falcon-signature" routerLinkActive="active" class="nav-btn">Falcon Signature</a>
-           <a routerLink="/generate" routerLinkActive="active" class="nav-btn">Generate Proof</a>
-           <a routerLink="/verify" routerLinkActive="active" class="nav-btn">Verify Proof</a>
-         </nav>
-        
+        <!-- Navigation Buttons Removed -->
+
+
         <!-- Wallet Connection -->
         <div class="wallet-section">
           <button class="btn-wallet" (click)="connectWallet()" [disabled]="(isConnecting$ | async)">
@@ -29,13 +26,13 @@
 
           <!-- Auth Status / Disconnect (Simplified from original) -->
           <button *ngIf="walletAddress$ | async" class="btn-disconnect" (click)="connectWallet()">
-             Disconnect
+            Disconnect
           </button>
         </div>
-        
+
         <div class="extra-actions">
-           <a href="#" class="btn-litepaper">LITEPAPER</a>
-           <a href="#" class="btn-qlabs">$qLABS</a>
+          <a href="#" class="btn-litepaper">LITEPAPER</a>
+          <a href="#" class="btn-qlabs">$qLABS</a>
         </div>
       </div>
     </div>
@@ -48,7 +45,7 @@
     <div class="corner-marker top-right"></div>
     <div class="corner-marker bottom-left"></div>
     <div class="corner-marker bottom-right"></div>
-    
+
     <div class="app-content">
       <router-outlet></router-outlet>
     </div>

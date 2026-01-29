@@ -1,13 +1,13 @@
 <div class="proof-verification-container">
   <div class="info-box">
-    <strong>ℹ️ About Verification:</strong> Verify Zero-Knowledge Proofs (Groth16) for Falcon-512 signatures. 
+    <strong>ℹ️ About Verification:</strong> Verify Zero-Knowledge Proofs (Groth16) for Falcon-512 signatures.
     This ensures the proof is valid without revealing the underlying signature data.
   </div>
 
   <!-- 1. Actions Section -->
   <div class="form-section">
     <h2>1️⃣ Verification Actions</h2>
-    
+
     <div class="button-group left" style="margin-bottom: 20px;">
       <button class="btn btn-secondary" (click)="goBack()">
         ← Back to Generator
@@ -25,45 +25,24 @@
       <h3>Manual Proof Input</h3>
       <div class="form-group">
         <label for="proofInput">Proof JSON</label>
-        <textarea
-          id="proofInput"
-          [(ngModel)]="proofInput"
-          rows="8"
-          class="code-font"
+        <textarea id="proofInput" [(ngModel)]="proofInput" rows="8" class="code-font"
           placeholder='{"pi_a": [...], "pi_b": [...], "pi_c": [...], "protocol": "groth16", "curve": "bn128"}'
-          [disabled]="loading"
-        ></textarea>
+          [disabled]="loading"></textarea>
       </div>
 
       <div class="form-group">
         <label for="publicSignalsInput">Public Signals JSON</label>
-        <textarea
-          id="publicSignalsInput"
-          [(ngModel)]="publicSignalsInput"
-          rows="4"
-          class="code-font"
-          placeholder='["signal1", "signal2", "signal3"]'
-          [disabled]="loading"
-        ></textarea>
+        <textarea id="publicSignalsInput" [(ngModel)]="publicSignalsInput" rows="4" class="code-font"
+          placeholder='["signal1", "signal2", "signal3"]' [disabled]="loading"></textarea>
       </div>
 
       <div class="button-group center" style="margin-top: 20px;">
-        <button 
-          type="button" 
-          class="btn btn-primary" 
-          (click)="verifyProof()"
-          [disabled]="loading"
-        >
+        <button type="button" class="btn btn-primary" (click)="verifyProof()" [disabled]="loading">
           <span *ngIf="!loading">🔍 Verify Proof Now</span>
           <span *ngIf="loading">⏳ Verifying...</span>
         </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="unlockAccount()"
-          [disabled]="loading"
-          style="margin-left: 15px;"
-        >
+        <button type="button" class="btn btn-primary" (click)="unlockAccount()" [disabled]="loading"
+          style="margin-left: 15px;">
           🔓 Unlock Account
         </button>
       </div>
@@ -73,13 +52,14 @@
   <!-- 2. Proof Details Section -->
   <div class="results-section" *ngIf="!manualMode && proof">
     <h2>2️⃣ Proof Details</h2>
-    
+
     <div class="result-grid">
       <!-- Public Signals -->
       <div class="result-item highlight">
         <div class="label-row">
           <label>Public Signals ({{ publicSignals.length }})</label>
-          <button class="btn-copy-inline" (click)="copyToClipboard(JSON.stringify(publicSignals), 'Public Signals')">📋</button>
+          <button class="btn-copy-inline"
+            (click)="copyToClipboard(JSON.stringify(publicSignals), 'Public Signals')">❐</button>
         </div>
         <div class="value-box code-font" style="max-height: 200px; overflow-y: auto;">
           <div *ngFor="let signal of publicSignals; let i = index">
@@ -92,7 +72,7 @@
       <div class="result-item">
         <div class="label-row">
           <label>Proof Data (π_a, π_b, π_c)</label>
-          <button class="btn-copy-inline" (click)="copyToClipboard(JSON.stringify(proof, null, 2), 'Proof')">📋</button>
+          <button class="btn-copy-inline" (click)="copyToClipboard(JSON.stringify(proof, null, 2), 'Proof')">❐</button>
         </div>
         <div class="value-box code-font" style="max-height: 200px; overflow-y: auto;">
           <div><strong>Protocol:</strong> {{ proof?.protocol }}</div>
@@ -103,22 +83,12 @@
     </div>
 
     <div class="button-group center" style="margin-top: 20px;">
-      <button 
-        type="button" 
-        class="btn btn-primary" 
-        (click)="verifyProof()"
-        [disabled]="loading"
-      >
+      <button type="button" class="btn btn-primary" (click)="verifyProof()" [disabled]="loading">
         <span *ngIf="!loading">🔍 Verify Proof Now</span>
         <span *ngIf="loading">⏳ Verifying...</span>
       </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        (click)="unlockAccount()"
-        [disabled]="loading"
-        style="margin-left: 15px;"
-      >
+      <button type="button" class="btn btn-primary" (click)="unlockAccount()" [disabled]="loading"
+        style="margin-left: 15px;">
         🔓 Unlock Account
       </button>
     </div>
@@ -127,7 +97,7 @@
   <!-- 3. Results Section -->
   <div class="results-section" *ngIf="verificationResult !== null">
     <h2>3️⃣ Verification Result</h2>
-    
+
     <div class="result-box" [class.success]="verificationResult" [class.failure]="!verificationResult">
       <div class="result-icon">
         {{ verificationResult ? '✅' : '❌' }}
@@ -150,12 +120,7 @@
     </div>
 
     <div class="button-group center">
-      <button 
-        type="button" 
-        class="btn btn-secondary" 
-        (click)="clearResults()"
-        [disabled]="loading"
-      >
+      <button type="button" class="btn btn-secondary" (click)="clearResults()" [disabled]="loading">
         Clear Results
       </button>
     </div>
