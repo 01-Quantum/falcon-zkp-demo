@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ZkpService } from '../../services/zkp';
-import { BlockchainService } from '../../services/blockchain.service';
+import { ZkpService } from '../../../services/zkp';
+import { BlockchainService } from '../../../services/blockchain.service';
 
 @Component({
   selector: 'app-proof-verification',
@@ -18,12 +18,12 @@ export class ProofVerificationComponent implements OnInit {
   verificationResult: boolean | null = null;
   loading = false;
   error: string | null = null;
-  
+
   // For manual input
   manualMode = false;
   proofInput: string = '';
   publicSignalsInput: string = '';
-  
+
   // Expose JSON to template
   JSON = JSON;
 
@@ -31,7 +31,7 @@ export class ProofVerificationComponent implements OnInit {
     private zkpService: ZkpService,
     private router: Router,
     private blockchainService: BlockchainService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Load proof from sessionStorage if available
@@ -63,7 +63,7 @@ export class ProofVerificationComponent implements OnInit {
           // Use the edited inputs from the textareas
           proofToVerify = JSON.parse(this.proofInput);
           signalsToVerify = JSON.parse(this.publicSignalsInput);
-          
+
           // Update component state to reflect edits
           this.proof = proofToVerify;
           this.publicSignals = signalsToVerify;
@@ -74,7 +74,7 @@ export class ProofVerificationComponent implements OnInit {
 
       console.log('Verifying proof...');
       const isValid = await this.zkpService.verifyProof(proofToVerify, signalsToVerify);
-      
+
       this.verificationResult = isValid;
       this.loading = false;
     } catch (err: any) {
@@ -96,10 +96,10 @@ export class ProofVerificationComponent implements OnInit {
     try {
       const response = await fetch('assets/proof-2.json');
       const proof = await response.json();
-      
+
       const pubResponse = await fetch('assets/public-2.json');
       const publicSignals = await pubResponse.json();
-      
+
       this.proof = proof;
       this.publicSignals = publicSignals;
       this.proofInput = JSON.stringify(proof, null, 2);
@@ -111,7 +111,7 @@ export class ProofVerificationComponent implements OnInit {
   }
 
   goBack() {
-    this.router.navigate(['/generate']);
+    this.router.navigate(['/advanced/generate']);
   }
 
   clearResults() {
@@ -127,31 +127,31 @@ export class ProofVerificationComponent implements OnInit {
 
   async unlockAccount() {
     if (!this.proof || !this.publicSignals || this.publicSignals.length < 3) {
-        alert('Please verify a valid proof first.');
-        return;
+      alert('Please verify a valid proof first.');
+      return;
     }
 
     try {
-        const falconPubHash = this.publicSignals[0];
-        const txHashLow = this.publicSignals[1];
-        const txHashHigh = this.publicSignals[2];
-        
-        const pi_a = this.proof.pi_a;
-        const pi_b = this.proof.pi_b;
-        const pi_c = this.proof.pi_c;
+      const falconPubHash = this.publicSignals[0];
+      const txHashLow = this.publicSignals[1];
+      const txHashHigh = this.publicSignals[2];
 
-        await this.blockchainService.unlockAccount(
-            falconPubHash, 
-            txHashLow, 
-            txHashHigh, 
-            pi_a, 
-            pi_b, 
-            pi_c
-        );
+      const pi_a = this.proof.pi_a;
+      const pi_b = this.proof.pi_b;
+      const pi_c = this.proof.pi_c;
+
+      await this.blockchainService.unlockAccount(
+        falconPubHash,
+        txHashLow,
+        txHashHigh,
+        pi_a,
+        pi_b,
+        pi_c
+      );
 
     } catch (e: any) {
-        console.error(e);
-        alert('Failed to send unlock transaction: ' + e.message);
+      console.error(e);
+      alert('Failed to send unlock transaction: ' + e.message);
     }
   }
 }

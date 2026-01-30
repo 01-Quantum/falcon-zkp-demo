@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FalconCircuitInputsService } from '../../services/falcon-circuit-inputs.service';
-import { FalconWasmService } from '../../services/falcon-wasm.service';
-import { BlockchainService } from '../../services/blockchain.service';
+import { FalconCircuitInputsService } from '../../../services/falcon-circuit-inputs.service';
+import { FalconWasmService } from '../../../services/falcon-wasm.service';
+import { BlockchainService } from '../../../services/blockchain.service';
 
 @Component({
   selector: 'app-falcon-signature',
@@ -20,16 +20,16 @@ export class FalconSignatureComponent implements OnInit {
   // User inputs for generation
   seedInput: string = 'my-secret-seed-12345';
   messageInput: string = 'Hello, Falcon-512! This is a test message.';
-  
+
   // Generated artifacts
   generatedSignature: string | null = null;
   generatedPublicKey: string | null = null;
   generatedNonce: string | null = null;
   messageHashHex: string | null = null;
-  
+
   // Hashes
   pkHash: string | null = null;
-  
+
   // Toggle details
   showDetails = false;
 
@@ -106,14 +106,14 @@ export class FalconSignatureComponent implements OnInit {
 
       // 4. Sign Message Hash
       // Deterministic RNG seed (all zeros)
-      const rngSeed = new Uint8Array(48); 
+      const rngSeed = new Uint8Array(48);
       const signature = this.falconWasm.signMessage(msgHash, keypair.privateKey, rngSeed);
       this.generatedSignature = this.toBase64(signature);
-      
+
       // 5. Extract details
       const pubKeyCoeffs = this.falconWasm.getPublicKeyCoefficients(keypair.publicKey);
       const sigCoeffs = this.falconWasm.getSignatureCoefficients(signature);
-      
+
       // Extract nonce (bytes 1-40)
       const nonce = signature.slice(1, 41);
       this.generatedNonce = this.toBase64(nonce);
@@ -141,7 +141,7 @@ export class FalconSignatureComponent implements OnInit {
         this.in_tx_hash1,
         this.in_tx_hash2
       );
-      
+
       this.pkHash = inputs.pk_hash_in;
 
       this.statusMessage = '✅ Generated successfully!';
@@ -165,10 +165,10 @@ export class FalconSignatureComponent implements OnInit {
   async calculateSha256(str: string): Promise<Uint8Array> {
     const encoder = new TextEncoder();
     const data = encoder.encode(str);
-    
+
     if (crypto && crypto.subtle) {
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        return new Uint8Array(hashBuffer);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      return new Uint8Array(hashBuffer);
     }
     throw new Error('Web Crypto API is required for SHA-256');
   }
@@ -176,29 +176,29 @@ export class FalconSignatureComponent implements OnInit {
   async stringToSeed(str: string): Promise<Uint8Array> {
     // Reuse the SHA256 logic, then extend to 48 bytes if needed
     try {
-        const hash = await this.calculateSha256(str);
-        // If we need exactly 48 bytes, we can just loop/pad.
-        // Original logic:
-        const seed = new Uint8Array(48);
-        for (let i = 0; i < 48; i++) {
-            seed[i] = hash[i % 32];
-        }
-        return seed;
+      const hash = await this.calculateSha256(str);
+      // If we need exactly 48 bytes, we can just loop/pad.
+      // Original logic:
+      const seed = new Uint8Array(48);
+      for (let i = 0; i < 48; i++) {
+        seed[i] = hash[i % 32];
+      }
+      return seed;
     } catch (e) {
-        console.warn('Web Crypto API error in stringToSeed, using fallback');
+      console.warn('Web Crypto API error in stringToSeed, using fallback');
     }
-    
+
     // Fallback
     const data = new TextEncoder().encode(str);
     const seed = new Uint8Array(48);
     let h = 0;
     for (let i = 0; i < data.length; i++) {
-        h = ((h << 5) - h) + data[i];
-        h = h & h; 
+      h = ((h << 5) - h) + data[i];
+      h = h & h;
     }
     for (let i = 0; i < 48; i++) {
-        h = (h * 1664525 + 1013904223) & 0xFFFFFFFF; 
-        seed[i] = (h >>> 24) & 0xFF;
+      h = (h * 1664525 + 1013904223) & 0xFFFFFFFF;
+      seed[i] = (h >>> 24) & 0xFF;
     }
     return seed;
   }
@@ -252,7 +252,7 @@ export class FalconSignatureComponent implements OnInit {
       );
 
       sessionStorage.setItem('prefilled_circuit_input', JSON.stringify(circuitInput));
-      this.router.navigate(['/generate']);
+      this.router.navigate(['/advanced/generate']);
 
     } catch (err: any) {
       console.error('Error generating circuit inputs:', err);
@@ -269,8 +269,8 @@ export class FalconSignatureComponent implements OnInit {
       const hArray = JSON.parse(this.h);
       const h2pArray = JSON.parse(this.h2p);
       return Array.isArray(s1Array) && s1Array.length === 512 &&
-             Array.isArray(hArray) && hArray.length === 512 &&
-             Array.isArray(h2pArray) && h2pArray.length === 512;
+        Array.isArray(hArray) && hArray.length === 512 &&
+        Array.isArray(h2pArray) && h2pArray.length === 512;
     } catch {
       return false;
     }

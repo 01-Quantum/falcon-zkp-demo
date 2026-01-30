@@ -1,0 +1,60 @@
+<div class="pqc-lock-container">
+    <div class="info-box">
+        <strong>ℹ️ PQC Lock:</strong> This demo simulates a post-quantum secure lock.
+        Enter a seed to generate your Falcon-512 keys. The "Unlock" action generates a Zero-Knowledge Proof that you
+        possess the private key, without checking the key directly.
+    </div>
+
+    <div class="generation-section" *ngIf="!isUnlocked">
+        <h2>1️⃣ Setup Lock</h2>
+
+        <div class="form-group">
+            <label for="seed">Private Seed (Enter any text):</label>
+            <input type="text" id="seed" [(ngModel)]="seed" placeholder="my-secret-password-123"
+                [disabled]="loading || !!privateKey" autocomplete="off">
+        </div>
+
+        <div class="button-group left" *ngIf="!privateKey">
+            <button class="btn btn-primary" (click)="generateKey()" [disabled]="loading || !seed">
+                {{ loading ? '⏳ Generating...' : '🗝️ Generate Key' }}
+            </button>
+        </div>
+
+        <div class="key-display" *ngIf="privateKey">
+            <div class="result-item">
+                <label>Your Public Key (Lock ID)</label>
+                <div class="value-box code-font">{{ publicKeyBase64 | slice:0:60 }}...</div>
+            </div>
+
+            <div class="action-area">
+                <p>Your key is ready. Prove ownership to unlock.</p>
+                <button class="btn btn-success" (click)="unlock()" [disabled]="loading">
+                    {{ loading ? '⏳ Verifying...' : '🔓 PQC Unlock (Generate Proof)' }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="results-section success-view" *ngIf="isUnlocked">
+        <div class="result-box success">
+            <div class="result-icon">✅</div>
+            <div class="result-text">
+                <h3>Access Granted</h3>
+                <p>Zero-Knowledge Proof verified successfully.</p>
+                <p class="meta-info">The lock confirmed you have the private key without ever seeing it.</p>
+            </div>
+        </div>
+
+        <div class="button-group center">
+            <button class="btn btn-secondary" (click)="reset()">🔒 Lock Again</button>
+        </div>
+    </div>
+
+    <div class="error-message" *ngIf="error">
+        <strong>❌ Error:</strong> {{ error }}
+    </div>
+
+    <div class="status-message" *ngIf="statusMessage && !error && !isUnlocked">
+        {{ statusMessage }}
+    </div>
+</div>

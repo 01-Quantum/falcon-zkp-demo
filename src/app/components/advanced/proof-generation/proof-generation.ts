@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ZkpService } from '../../services/zkp';
+import { ZkpService } from '../../../services/zkp';
 
 @Component({
   selector: 'app-proof-generation',
@@ -29,7 +29,7 @@ export class ProofGenerationComponent {
   constructor(
     private zkpService: ZkpService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Check if we have prefilled inputs from the falcon-signature page
@@ -45,10 +45,10 @@ export class ProofGenerationComponent {
         this.in_tx_hash1 = input.in_tx_hash1;
         this.in_tx_hash2 = input.in_tx_hash2;
         this.in_c_hash = input.in_c_hash;
-        
+
         // Clear the session storage after loading
         sessionStorage.removeItem('prefilled_circuit_input');
-        
+
         console.log('Loaded prefilled circuit inputs from Falcon Signature page');
       } catch (err) {
         console.error('Failed to load prefilled inputs:', err);
@@ -60,11 +60,11 @@ export class ProofGenerationComponent {
     try {
       this.loading = true;
       this.error = null;
-      
+
       // Load full circuit input example
       const response = await fetch(`assets/input-falcon512-${exampleNumber}.json`);
       const example = await response.json();
-      
+
       this.s1 = JSON.stringify(example.s1);
       this.h_hat = JSON.stringify(example.h_hat);
       this.h_product_inv = JSON.stringify(example.h_product_inv);
@@ -121,9 +121,9 @@ export class ProofGenerationComponent {
       sessionStorage.setItem('zkp_publicSignals', JSON.stringify(proofData.publicSignals));
 
       this.loading = false;
-      
+
       // Navigate to verification page
-      this.router.navigate(['/verify']);
+      this.router.navigate(['/advanced/verify']);
     } catch (err: any) {
       this.error = err.message || 'Failed to generate proof';
       this.loading = false;
