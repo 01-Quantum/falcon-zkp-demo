@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { FalconWasmService } from '../../services/falcon-wasm.service';
 import { FalconCircuitInputsService } from '../../services/falcon-circuit-inputs.service';
 import { ZkpService } from '../../services/zkp';
+import { BlockchainService } from '../../services/blockchain.service';
 
 @Component({
     selector: 'app-pqc-lock',
@@ -28,11 +29,21 @@ export class PqcLockComponent {
     error: string | null = null;
     statusMessage: string = '';
 
+    // Blockchain Status
+    walletAddress$;
+    isAuthorized$;
+    checkingAuth$;
+
     constructor(
         private falconWasmService: FalconWasmService,
         private falconCircuitInputsService: FalconCircuitInputsService,
-        private zkpService: ZkpService
-    ) { }
+        private zkpService: ZkpService,
+        private blockchainService: BlockchainService
+    ) {
+        this.walletAddress$ = this.blockchainService.walletAddress$;
+        this.isAuthorized$ = this.blockchainService.isAuthorized$;
+        this.checkingAuth$ = this.blockchainService.checkingAuth$;
+    }
 
     async generateKey() {
         if (!this.seed) {
@@ -60,7 +71,7 @@ export class PqcLockComponent {
             // 2. Generate Lock ID (Poseidon Hash)
             const pubKeyCoeffs = this.falconWasmService.getPublicKeyCoefficients(keypair.publicKey);
             const hash = await this.falconCircuitInputsService.computePoseidonHash(pubKeyCoeffs);
-            this.lockId = hash.toString();
+            this.lockId = '0x' + hash.toString(16);
 
             this.statusMessage = 'Keys generated successfully!';
             this.loading = false;
@@ -113,9 +124,19 @@ export class PqcLockComponent {
             // 6. Generate ZK Proof
             const proofData = await this.zkpService.generateProof(circuitInputs);
             this.proof = proofData.proof;
-            this.isUnlocked = true;
 
-            this.statusMessage = '🔓 Unlocked successfully! Zero-Knowledge Proof generated.';
+            // 7. Send Unlock Transaction to Blockchain
+            await this.blockchainService.unlockAccount(
+                this.lockId,
+                txHash1,
+                txHash2,
+                proofData.proof.pi_a,
+                proofData.proof.pi_b,
+                proofData.proof.pi_c
+            );
+
+            this.isUnlocked = true;
+            this.statusMessage = '🔓 Unlocked successfully! Blockchain transaction sent.';
             this.loading = false;
 
         } catch (err: any) {
@@ -165,5 +186,21 @@ export class PqcLockComponent {
 
     toggleRevealPrivateKey() {
         this.isPrivateKeyRevealed = !this.isPrivateKeyRevealed;
+    }
+
+    refreshStatus() {
+        this.blockchainService.checkAuthorization();
+    }
+
+    async lock() {
+        if (!this.lockId) return;
+        try {
+            this.loading = true;
+            await this.blockchainService.lockAccount(this.lockId);
+            this.loading = false;
+        } catch (err: any) {
+            this.error = 'Lock failed: ' + err.message;
+            this.loading = false;
+        }
     }
 }

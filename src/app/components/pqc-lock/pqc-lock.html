@@ -20,6 +20,21 @@
             </button>
         </div>
 
+        <div class="auth-status-container" *ngIf="walletAddress$ | async">
+            <div class="status-label">Current Status:</div>
+            <div class="status-value" [class.authorized]="isAuthorized$ | async"
+                [class.locked]="!(isAuthorized$ | async) && (isAuthorized$ | async) !== null">
+                <span *ngIf="checkingAuth$ | async">⏳ Checking...</span>
+                <span *ngIf="!(checkingAuth$ | async)">
+                    {{ (isAuthorized$ | async) ? '🔓 UNLOCKED' : '🔒 LOCKED' }}
+                </span>
+            </div>
+            <button class="btn-refresh" (click)="refreshStatus()" [disabled]="checkingAuth$ | async"
+                title="Refresh Status">
+                🔄
+            </button>
+        </div>
+
         <div class="key-display" *ngIf="privateKey">
             <div class="result-item highlight">
                 <label>Lock ID (Public Key Hash)</label>
@@ -42,11 +57,20 @@
                 </div>
             </div>
 
-            <div class="action-area">
-                <p>Your key is ready. Prove ownership to unlock.</p>
-                <button class="btn btn-success" (click)="unlock()" [disabled]="loading">
-                    {{ loading ? '⏳ Verifying...' : '🔓 PQC Unlock (Generate Proof)' }}
-                </button>
+            <div class="action-area" *ngIf="privateKey">
+                <p>Keys ready. Perform blockchain action:</p>
+                <div class="button-group center">
+                    <!-- Shown when account is currently UNLOCKED -->
+                    <button class="btn btn-primary" (click)="lock()" *ngIf="isAuthorized$ | async" [disabled]="loading">
+                        {{ loading ? '⏳ Processing...' : '🔒 PQC LOCK (Protect Account)' }}
+                    </button>
+
+                    <!-- Shown when account is currently LOCKED -->
+                    <button class="btn btn-success" (click)="unlock()" *ngIf="!(isAuthorized$ | async)"
+                        [disabled]="loading">
+                        {{ loading ? '⏳ Verifying...' : '🔓 PQC UNLOCK (Generate Proof)' }}
+                    </button>
+                </div>
             </div>
         </div>
     </div>
