@@ -142,7 +142,7 @@ const INV_NTT_TABLE = [
   7087, 11445, 5207, 8239, 8016, 9068, 9694, 8452, 7000, 5662, 567, 2941, 3769, 7434, 293, 3232,
   10883, 9656, 6940, 2945, 9282, 1265, 3480, 10118, 5530, 6685, 8190, 8345, 2832, 10268, 3572,
   11007, 8360, 1706, 7559, 9060, 6919, 8753, 8536, 3941, 6643, 6086, 6105, 9169, 8136, 2213,
-  3805, 11522, 11520, 5526, 12239, 12073, 4360, 9004, 7235, 9135, 8566, 11444, 10353, 12282 ];
+  3805, 11522, 11520, 5526, 12239, 12073, 4360, 9004, 7235, 9135, 8566, 11444, 10353, 12282];
 
 interface CircuitInput {
   s1: number[];
@@ -159,8 +159,8 @@ interface CircuitInput {
   providedIn: 'root'
 })
 export class FalconCircuitInputsService {
-  
-  constructor() {}
+
+  constructor() { }
 
   /**
    * Main function to generate full circuit inputs from simplified Falcon signature components
@@ -182,10 +182,10 @@ export class FalconCircuitInputsService {
     const h_hat = this.ntt(h);
 
     // Compute in_c_hash from h2p
-    const in_c_hash = await this.pointToHash(h2p);
+    const in_c_hash = await this.computePoseidonHash(h2p);
 
     // Compute pk_hash_in from h_hat
-    const pk_hash_in = await this.pointToHash(h_hat);
+    const pk_hash_in = await this.computePoseidonHash(h_hat);
 
     // Compute SHA256 unpacked values and add to h2p
     const unpacked_sha256 = this.sha256ToU16(BigInt(in_tx_hash1), BigInt(in_tx_hash2));
@@ -345,7 +345,7 @@ export class FalconCircuitInputsService {
    * Hash a point (array) using Poseidon hash
    * Mimics the PubKeyHash circuit behavior
    */
-  private async pointToHash(inArr: number[]): Promise<bigint> {
+  public async computePoseidonHash(inArr: number[]): Promise<bigint> {
     const Q_BIGINT = 12289n;
     const N = inArr.length;
 

@@ -17,6 +17,9 @@ export class PqcLockComponent {
     privateKey: Uint8Array | null = null;
     publicKey: Uint8Array | null = null;
     publicKeyBase64: string = '';
+    privateKeyBase64: string = '';
+    lockId: string = '';
+    isPrivateKeyRevealed: boolean = false;
 
     // Unlock status
     isUnlocked: boolean = false;
@@ -52,6 +55,12 @@ export class PqcLockComponent {
             this.privateKey = keypair.privateKey;
             this.publicKey = keypair.publicKey;
             this.publicKeyBase64 = this.toBase64(keypair.publicKey);
+            this.privateKeyBase64 = this.toBase64(keypair.privateKey);
+
+            // 2. Generate Lock ID (Poseidon Hash)
+            const pubKeyCoeffs = this.falconWasmService.getPublicKeyCoefficients(keypair.publicKey);
+            const hash = await this.falconCircuitInputsService.computePoseidonHash(pubKeyCoeffs);
+            this.lockId = hash.toString();
 
             this.statusMessage = 'Keys generated successfully!';
             this.loading = false;
@@ -121,6 +130,9 @@ export class PqcLockComponent {
         this.privateKey = null;
         this.publicKey = null;
         this.publicKeyBase64 = '';
+        this.privateKeyBase64 = '';
+        this.lockId = '';
+        this.isPrivateKeyRevealed = false;
         this.isUnlocked = false;
         this.proof = null;
         this.error = null;
@@ -134,5 +146,24 @@ export class PqcLockComponent {
             binary += String.fromCharCode(bytes[i]);
         }
         return window.btoa(binary);
+    }
+
+    async copyToClipboard(text: string) {
+        try {
+            await navigator.clipboard.writeText(text);
+            const oldStatus = this.statusMessage;
+            this.statusMessage = '📋 Copied to clipboard!';
+            setTimeout(() => {
+                if (this.statusMessage === '📋 Copied to clipboard!') {
+                    this.statusMessage = oldStatus;
+                }
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy: ', err);
+        }
+    }
+
+    toggleRevealPrivateKey() {
+        this.isPrivateKeyRevealed = !this.isPrivateKeyRevealed;
     }
 }

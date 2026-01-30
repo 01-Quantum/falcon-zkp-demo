@@ -1,6 +1,6 @@
 <div class="pqc-lock-container">
     <div class="info-box">
-        <strong>ℹ️ PQC Lock:</strong> This demo simulates a post-quantum secure lock.
+        <strong>ℹ️ PQC Lock:</strong> This performs a post-quantum secure lock.
         Enter a seed to generate your Falcon-512 keys. The "Unlock" action generates a Zero-Knowledge Proof that you
         possess the private key, without checking the key directly.
     </div>
@@ -21,9 +21,25 @@
         </div>
 
         <div class="key-display" *ngIf="privateKey">
+            <div class="result-item highlight">
+                <label>Lock ID (Public Key Hash)</label>
+                <div class="value-box-wrapper">
+                    <div class="value-box code-font">{{ lockId }}</div>
+                    <button class="btn-copy-inline" (click)="copyToClipboard(lockId)" title="Copy Lock ID">❐</button>
+                </div>
+            </div>
+
             <div class="result-item">
-                <label>Your Public Key (Lock ID)</label>
-                <div class="value-box code-font">{{ publicKeyBase64 | slice:0:60 }}...</div>
+                <label>Your Private Key</label>
+                <div class="action-row" *ngIf="!isPrivateKeyRevealed">
+                    <button class="btn btn-reveal" (click)="toggleRevealPrivateKey()">👁️ Reveal Private Key</button>
+                </div>
+                <div class="value-box-wrapper" *ngIf="isPrivateKeyRevealed">
+                    <div class="value-box code-font">{{ privateKeyBase64 | slice:0:60 }}...</div>
+                    <button class="btn-copy-inline" (click)="copyToClipboard(privateKeyBase64)"
+                        title="Copy Private Key">❐</button>
+                    <button class="btn-hide-inline" (click)="toggleRevealPrivateKey()" title="Hide">👁️‍🗨️</button>
+                </div>
             </div>
 
             <div class="action-area">
